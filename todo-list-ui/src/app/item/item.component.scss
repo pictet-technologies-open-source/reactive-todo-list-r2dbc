@@ -1,0 +1,54 @@
+.item-card {
+  padding: 15px;
+  background-color: lightyellow;
+  margin: 0;
+  overflow: auto;
+  min-height: 75px;
+  max-height: 200px;
+}
+
+.item-description {
+  padding-right: 20px;
+  padding-left: 5px;
+  word-break: break-all;
+  word-wrap: break-word;
+  white-space: pre-line;
+}
+
+.icon {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.toolbar {
+  margin-left: 10px;
+
+}
+
+.fade {
+  animation: fadeIn 0.5s linear;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.timestamp-info {
+  color: darkgrey;
+  padding-top: 2px;
+  text-align: right;
+  width: 100%;
+  font-size: 11px;
+  font-family: sans-serif;
+
+  &.recent {
+    color: darkgreen;
+  }
+}
+

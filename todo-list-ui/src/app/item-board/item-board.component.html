@@ -1,0 +1,42 @@
+<mat-toolbar class="toolbar">
+  <span class="toolbar-title">To Do List</span>
+  <button color="basic" class="toolbar-item" [disabled]="actionInProgress" mat-mini-fab (click)="refresh()"
+          matTooltip="Refresh">
+    <mat-icon>refresh</mat-icon>
+  </button>
+  <button color="basic" class="toolbar-item" [disabled]="actionInProgress" mat-mini-fab (click)="add()"
+          matTooltip="Add a new item">
+    <mat-icon>add</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div cdkDropListGroup>
+  <div class="status-cols">
+    <!-- One column per status (To do, In progress, Done) -->
+    <div class="status-col" *ngFor="let status of getStatuses()" cdkDropList
+         [cdkDropListData]="statusItemsMap.get(status)"
+         cdkDropListSortingDisabled
+         [ngClass]="{'drag-drop-hover-col': dragAndDropInProgress}"
+         (cdkDropListDropped)="drop($event)">
+
+      <!-- Status title -->
+      <div class="status-title">
+        <span>{{ItemStatus[status]}}</span>
+      </div>
+
+      <!-- Items for the current status -->
+      <div *ngFor="let item of statusItemsMap.get(status);"
+           (cdkDragStarted)="startDragAction()"
+           (cdkDragEnded)="stopDragAction()"
+           cdkDrag class="item-div">
+
+        <app-item [item]="item"
+                  [readonly]="dragAndDropInProgress || actionInProgress"
+                  (itemDeleted)="refresh()"
+                  (itemUpdated)="refresh()"></app-item>
+
+      </div>
+
+    </div>
+  </div>
+</div>

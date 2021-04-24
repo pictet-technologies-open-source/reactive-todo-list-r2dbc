@@ -1,0 +1,42 @@
+databaseChangeLog:
+
+  -  changeSet:
+       id:  01-create-item-table
+       author:  ajacquot
+       changes:
+         -  createTable:
+              schema: public
+              tableName:  item
+              columns:
+                -  column:
+                     name:  id
+                     type:  int
+                     autoIncrement:  true
+                     constraints:
+                       primaryKey:  true
+                       nullable:  false
+                -  column:
+                     name:  version
+                     type:  int
+                     constraints:
+                       nullable: false
+                - column:
+                    name: status
+                    type: varchar(15)
+                    constraints:
+                      nullable: false
+                -  column:
+                     name:  description
+                     type:  varchar(4000)
+                     constraints:
+                       nullable:  false
+                -  column:
+                     name:  created_date
+                     type:  timestamp
+                     constraints:
+                       nullable: false
+                - column:
+                    name: last_modified_date
+                    type: timestamp
+                    constraints:
+                      nullable: false

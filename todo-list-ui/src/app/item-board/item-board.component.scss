@@ -1,0 +1,57 @@
+.toolbar {
+  border-bottom: black solid 0.5px;
+  margin-bottom: 50px;
+}
+
+.toolbar-title {
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 40px;
+  font-size: 1.5em;
+  font-family: 'Luckiest Guy', cursive;
+  color: white;
+  text-shadow: 2px 2px black;
+}
+
+.toolbar-item {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.status-cols {
+  display: flex;
+  overflow: hidden;
+}
+
+.status-col {
+  float: left;
+  margin: 5px;
+  width: 33%;
+  min-height: 60vh;
+
+  &.drag-drop-hover-col {
+    border: dashed darkred 1px;
+  }
+}
+
+.status-title {
+  font-family: 'Luckiest Guy', cursive;
+  color: #ececec;
+  text-shadow: 2px 2px black;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  font-size: 30px;
+}
+
+.item-div {
+  margin: 20px;
+}
+
+.cdk-drag-placeholder {
+  visibility: hidden;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

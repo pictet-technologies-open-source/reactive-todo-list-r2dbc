@@ -1,0 +1,10 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+body,html {
+  margin: 0;
+  padding: 0;
+}
+
+.error-message {
+  white-space: pre-wrap
+}

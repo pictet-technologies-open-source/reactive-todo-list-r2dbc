@@ -1,0 +1,29 @@
+<div fxLayout="row" (mouseenter)="displayMenu = true" (mouseleave)="displayMenu = false">
+  <div style="width: 10%"></div>
+  <div style="width: 80%;" (mouseup)="displayMenu = true" (mousedown)="displayMenu = false">
+    <mat-card class="item-card">
+      <mat-card-content>
+        <div class="item-description">
+          <span>{{item.description}}</span>
+        </div>
+      </mat-card-content>
+      <mat-card-footer>
+      </mat-card-footer>
+    </mat-card>
+    <div [ngClass]="{'recent': hasBeenUpdateRecently()}" class="timestamp-info">
+      <span>Saved {{item.lastModifiedDate | momentHumanize }} ago</span>
+    </div>
+  </div>
+  <div style="width: 10%">
+    <div fxLayout="column" fxLayoutAlign="space-evenly" class="toolbar fade" *ngIf="displayActionButtons()">
+      <button [disabled]="actionInProgress" color="basic" mat-mini-fab class="icon" matTooltip="Edit the item"
+              (click)="edit()">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button [disabled]="actionInProgress" color="accent" mat-mini-fab class="icon" matTooltip="Delete the item"
+              (click)="delete()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
