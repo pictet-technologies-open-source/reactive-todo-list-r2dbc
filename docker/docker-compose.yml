@@ -3,7 +3,7 @@ version: "3.1"
 services:
 
   postgres:
-    container_name: postgres
+    container_name: postgresdb
     image: postgres:13.2
     restart: always
     environment:
@@ -34,8 +34,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - spring.r2dbc.url=r2dbc:postgresql://postgres:5432
-      - spring.liquibase.url=jdbc:postgresql://postgres:5432
+      - spring.r2dbc.url=r2dbc:postgresql://postgres:5432/todolist
+      - spring.liquibase.url=jdbc:postgresql://postgres:5432/todolist
 
 volumes:
   postgres_data:
