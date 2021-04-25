@@ -9,7 +9,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>reactive-todo-list-ui</artifactId>
+  <artifactId>reactive-r2dbc-todo-list-ui</artifactId>
 
   <packaging>jar</packaging>
 

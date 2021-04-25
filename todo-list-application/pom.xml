@@ -12,7 +12,7 @@
   <artifactId>reactive-r2dbc-todo-list-app</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>r2dbc-todo-list-application</name>
+  <name>reactive-r2dbc-todo-list-application</name>
   <description>Spring boot application demonstrating how to build a reactive app with R2DBC</description>
 
   <properties>
