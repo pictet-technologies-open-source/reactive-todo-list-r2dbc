@@ -120,7 +120,7 @@ public class ItemControllerIntegrationTest {
                 .exchange()
                 // Then
                 .expectStatus().isCreated()
-                .expectHeader().valueMatches(HttpHeaders.LOCATION, "/items/[a-z0-9]+")
+                .expectHeader().valueMatches(HttpHeaders.LOCATION, ".*/items/[0-9]+")
                 .returnResult(ResponseEntity.class).getResponseHeaders()
                 .get(HttpHeaders.LOCATION).get(0);
 
