@@ -40,16 +40,16 @@ export class ItemBoardComponent implements OnInit, OnDestroy {
   // Enable this code to solve the issue of the maximum number of SSE
   // Drawback: data modifications are visible only when the user has the focus on the tab
   // ---------------------------------------------------------------------------------------
-  @HostListener('window:focus', ['$event'])
-  onFocus(event: any): void {
-    this.refresh();
-    this.startEventListener();
-  }
-
-  @HostListener('window:blur', ['$event'])
-  onBlur(event: any): void {
-    this.stopEventListener();
-  }
+  // @HostListener('window:focus', ['$event'])
+  // onFocus(event: any): void {
+  //   this.refresh();
+  //   this.startEventListener();
+  // }
+  //
+  // @HostListener('window:blur', ['$event'])
+  // onBlur(event: any): void {
+  //   this.stopEventListener();
+  // }
 
   refresh() {
     this.actionInProgress = true;
