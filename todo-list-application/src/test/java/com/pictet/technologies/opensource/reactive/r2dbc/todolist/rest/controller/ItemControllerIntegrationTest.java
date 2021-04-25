@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
@@ -163,7 +164,7 @@ public class ItemControllerIntegrationTest {
 
         // When
         webTestClient.put()
-                .uri(URI + "/unknown")
+                .uri(URI + "/-1")
                 .bodyValue(itemUpdateResource)
                 .exchange()
                 // Then
@@ -257,7 +258,7 @@ public class ItemControllerIntegrationTest {
     void GIVEN_no_item_WHEN_trying_to_delete_a_non_existing_item_THEN_an_error_is_returned() throws Exception {
 
         webTestClient.delete()
-                .uri(URI + "unknown")
+                .uri(URI + "-1")
                 .exchange()
                 // Then
                 .expectStatus().isNotFound();
@@ -334,7 +335,7 @@ public class ItemControllerIntegrationTest {
 
         // When
         webTestClient.patch()
-                .uri(URI + "unknown")
+                .uri(URI + "-1")
                 .bodyValue("{\"description\": \"updated\"}")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .exchange()

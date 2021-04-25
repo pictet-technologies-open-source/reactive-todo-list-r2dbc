@@ -22,7 +22,7 @@ databaseChangeLog:
                        nullable: false
                 - column:
                     name: status
-                    type: varchar(15)
+                    type: varchar(150)
                     constraints:
                       nullable: false
                 -  column:
