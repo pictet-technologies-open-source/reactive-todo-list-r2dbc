@@ -44,15 +44,14 @@ databaseChangeLog:
   -  changeSet:
        id: 02-item-events-trigger
        author:  ajacquot
+       dbms: '!h2'
        changes:
          -  sqlFile:
-              dbms:  '!h2'
               encoding: utf-8
               splitStatements: false
               path: db/notification/item_saved_trigger.sql
               stripComments:  true
          -  sqlFile:
-              dbms:  '!h2'
               encoding: utf-8
               splitStatements: false
               path: db/notification/item_deleted_trigger.sql
