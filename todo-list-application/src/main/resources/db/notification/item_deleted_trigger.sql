@@ -2,11 +2,8 @@ CREATE FUNCTION notify_item_deleted()
     RETURNS TRIGGER
 AS
    $$
-DECLARE
-   item JSON;
 BEGIN
-   item = row_to_json(OLD);
-   PERFORM pg_notify('item_deleted', item);
+   PERFORM pg_notify('item_deleted', row_to_json(OLD)::text);
    RETURN NULL;
 END;
 $$

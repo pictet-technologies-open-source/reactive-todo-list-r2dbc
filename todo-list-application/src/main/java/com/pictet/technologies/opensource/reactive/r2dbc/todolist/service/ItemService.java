@@ -6,18 +6,14 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper.ItemMap
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemRepository;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.Event;
-
 import io.r2dbc.postgresql.api.Notification;
 import io.r2dbc.postgresql.api.PostgresqlConnection;
 import io.r2dbc.postgresql.api.PostgresqlResult;
-import io.r2dbc.spi.Connection;
-import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -43,7 +39,11 @@ public class ItemService {
 
         Flux<Notification> listenItemSaved = this.eventConnection.createStatement("LISTEN item_saved").execute()
                 .flatMap(PostgresqlResult::getRowsUpdated)
-                .thenMany(eventConnection.getNotifications());
+                .thenMany(eventConnection.getNotifications()).map(e -> {
+                        System.out.println(e);
+                        return e;
+                        }
+                );
     }
 
     @PreDestroy

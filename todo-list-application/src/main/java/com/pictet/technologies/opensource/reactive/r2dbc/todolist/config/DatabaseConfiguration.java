@@ -12,21 +12,19 @@ import org.springframework.lang.NonNull;
 @Configuration
 public class DatabaseConfiguration extends AbstractR2dbcConfiguration {
 
-    private static final String BASE_CONFIG = "com.pictet.technologies.opensource.reactive.r2dbc.todolist.database";
-
-    @Value("${" + BASE_CONFIG + ".name}")
+    @Value("${database.name}")
     private String database;
 
-    @Value("${" + BASE_CONFIG + ".host}")
+    @Value("${database.host}")
     private String host;
 
-    @Value("${" + BASE_CONFIG + ".port}")
+    @Value("${database.port}")
     private int port;
 
-    @Value("${" + BASE_CONFIG + ".username}")
+    @Value("${database.username}")
     private String username;
 
-    @Value("${" + BASE_CONFIG + ".password}")
+    @Value("${database.password}")
     private String password;
 
     @Override
