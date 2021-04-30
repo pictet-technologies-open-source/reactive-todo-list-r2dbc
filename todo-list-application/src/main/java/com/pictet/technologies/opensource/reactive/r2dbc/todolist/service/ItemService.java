@@ -6,19 +6,13 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper.ItemMap
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemRepository;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.Event;
-import io.r2dbc.postgresql.api.Notification;
-import io.r2dbc.postgresql.api.PostgresqlConnection;
-import io.r2dbc.postgresql.api.PostgresqlResult;
-import io.r2dbc.spi.ConnectionFactory;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.HeartBeat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 @Service
 @RequiredArgsConstructor
@@ -28,28 +22,8 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
-    private final ConnectionFactory connectionFactory;
-    private PostgresqlConnection eventConnection;
 
-    @PostConstruct
-    private void postConstruct() {
-        this.eventConnection = Mono.from(connectionFactory.create())
-                .cast(PostgresqlConnection.class)
-                .block();
-
-        Flux<Notification> listenItemSaved = this.eventConnection.createStatement("LISTEN item_saved").execute()
-                .flatMap(PostgresqlResult::getRowsUpdated)
-                .thenMany(eventConnection.getNotifications()).map(e -> {
-                        System.out.println(e);
-                        return e;
-                        }
-                );
-    }
-
-    @PreDestroy
-    private void preDestroy() {
-        this.eventConnection.close().subscribe();
-    }
+    private final DatabaseNotificationService connectionService;
 
     @Transactional(readOnly = true)
     public Flux<Item> findAll() {
@@ -97,8 +71,8 @@ public class ItemService {
     @Transactional(readOnly = true)
     public Flux<Event> listenToEvents() {
 
-        // TODO
-        return null;
+        return this.connectionService.listenTopics("item_saved", "item_deleted")
+                .map(text -> new HeartBeat());
     }
 
     private Mono<Boolean> verifyExistence(Long id) {

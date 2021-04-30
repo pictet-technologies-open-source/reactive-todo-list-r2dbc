@@ -7,6 +7,7 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemR
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemUpdateResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.NewItemResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.Event;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.HeartBeat;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.ItemService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,8 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
+import java.time.Duration;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -106,11 +109,14 @@ public class ItemController {
         return itemService.deleteById(id, version).map(empty -> noContent().build());
     }
 
-    @GetMapping("events")
+    @GetMapping("/events")
     public Flux<ServerSentEvent<Event>> listenToEvents() {
 
-        // TODO
-        return null;
+        return itemService.listenToEvents()
+                .map(event -> ServerSentEvent.<Event>builder()
+                        .retry(Duration.ofSeconds(4L))
+                        .event(event.getClass().getSimpleName())
+                        .data(event).build());
     }
 
 }
