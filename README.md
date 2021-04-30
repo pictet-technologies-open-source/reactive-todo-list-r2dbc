@@ -54,6 +54,15 @@ If you only want to start postgres, execute the following command
 $ start.sh -postgres-only
 ```
 
+#### Configure PgAdmin
+
+Login to PgAdmin: http://localhost:5050/
+
+Login: admin@admin.com
+Password: password
+
+Create a datasource
+
 #### Stop the application
 
 ```
