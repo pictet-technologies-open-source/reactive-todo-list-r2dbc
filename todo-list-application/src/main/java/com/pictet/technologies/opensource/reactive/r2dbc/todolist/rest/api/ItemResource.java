@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class ItemResource {
 
-    private String id;
+    private Long id;
     private Long version;
 
     private String description;

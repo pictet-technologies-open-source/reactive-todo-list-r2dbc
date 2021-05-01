@@ -52,19 +52,19 @@ export class ItemService {
     return this.http.post<Item>(this.baseUrl, {description});
   }
 
-  findById(id: string): Observable<Item> {
+  findById(id: number): Observable<Item> {
     return this.http.get<Item>(`${this.baseUrl}/${id}`);
   }
 
-  delete(id: string, version: number): Observable<any> {
+  delete(id: number, version: number): Observable<any> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, ItemService.buildOptions(version));
   }
 
-  updateDescription(id: string, version: number, description: string): Observable<any> {
+  updateDescription(id: number, version: number, description: string): Observable<any> {
     return this.http.patch<void>(`${this.baseUrl}/${id}`, {description}, ItemService.buildOptions(version));
   }
 
-  updateStatus(id: string, version: number, status: ItemStatus): Observable<any> {
+  updateStatus(id: number, version: number, status: ItemStatus): Observable<any> {
     return this.http.patch<void>(`${this.baseUrl}/${id}`, {status}, ItemService.buildOptions(version));
   }
 

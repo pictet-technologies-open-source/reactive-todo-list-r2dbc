@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {ItemService} from '../service/item.service';
 import {finalize, take} from 'rxjs/operators';
 import {ItemStatus} from '../model/item-status.enum';
@@ -135,7 +135,7 @@ export class ItemBoardComponent implements OnInit, OnDestroy {
     this.statusItemsMap.get(item.status).push(item);
   }
 
-  private removeItem(itemId: string) {
+  private removeItem(itemId: number) {
     // Remove the item
     for (const items of this.statusItemsMap.values()) {
       const index = items.map(i => i.id).indexOf(itemId);
