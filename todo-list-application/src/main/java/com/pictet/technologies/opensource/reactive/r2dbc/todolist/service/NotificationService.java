@@ -38,7 +38,7 @@ public class NotificationService {
      */
     public <T> Flux<T> listen(final NotificationTopic topic, final Class<T> clazz) {
 
-        // Listen to all topics if we are not already listened
+        // Listen to the topic
         final String topicName = topic.getTopicName();
 
         synchronized (watchedTopicNames) {
