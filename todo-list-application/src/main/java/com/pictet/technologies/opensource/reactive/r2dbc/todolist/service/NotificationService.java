@@ -37,7 +37,7 @@ public class NotificationService {
      * @param clazz class of parameter of the notification (used for deserialization)
      * @return the notification parameters
      */
-    public <T> Flux<T> listenTopic(@NonNull final NotificationTopic topic, @NonNull Class<T> clazz) {
+    public <T> Flux<T> listen(@NonNull final NotificationTopic topic, @NonNull Class<T> clazz) {
 
         // Listen to all topics if we are not already listened
         final String topicName = topic.getTopicName();
@@ -70,7 +70,7 @@ public class NotificationService {
      *
      * @param topic Topic to which the connection needs to unsubscribe from
      */
-    public void unlistenTopic(final NotificationTopic topic) {
+    public void unlisten(final NotificationTopic topic) {
 
         final String topicName = topic.getTopicName();
 
