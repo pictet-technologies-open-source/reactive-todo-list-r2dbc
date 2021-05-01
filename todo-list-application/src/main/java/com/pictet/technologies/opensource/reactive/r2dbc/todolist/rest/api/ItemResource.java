@@ -4,7 +4,7 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.ItemStat
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
@@ -16,7 +16,7 @@ public class ItemResource {
     private String description;
     private ItemStatus status;
 
-    private Instant createdDate;
-    private Instant lastModifiedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastModifiedDate;
 
 }

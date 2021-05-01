@@ -11,7 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Table
 @EqualsAndHashCode(of = "id")
@@ -32,9 +32,9 @@ public class Item {
     private ItemStatus status = ItemStatus.TODO;
 
     @CreatedDate
-    private Instant createdDate;
+    private LocalDateTime createdDate;
 
     @LastModifiedDate
-    private Instant lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
 }
