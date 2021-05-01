@@ -58,10 +58,15 @@ $ start.sh -postgres-only
 
 Login to PgAdmin: http://localhost:5050/
 
-Login: admin@admin.com
-Password: password
+- Login: admin@admin.com
+- Password: password
 
-Create a datasource
+Create a connection
+
+- Server: postgres
+- Database name: todolist
+- User: admin
+- Password: password
 
 #### Stop the application
 
