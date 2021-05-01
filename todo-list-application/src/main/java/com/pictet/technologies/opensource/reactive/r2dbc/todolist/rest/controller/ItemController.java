@@ -118,11 +118,11 @@ public class ItemController {
     public Flux<ServerSentEvent<Event>> listenToEvents() {
 
         final Flux<Event> itemSavedFlux =
-                this.notificationService.executeListenStatement(ITEM_SAVED, Item.class)
+                this.notificationService.listen(ITEM_SAVED, Item.class)
                         .map(item -> new ItemSaved().setItem(itemMapper.toResource(item)));
 
         final Flux<Event> itemDeletedFlux =
-                this.notificationService.executeListenStatement(ITEM_DELETED, Item.class)
+                this.notificationService.listen(ITEM_DELETED, Item.class)
                         .map(item -> new ItemDeleted().setItemId(item.getId()));
 
         return Flux.merge(itemSavedFlux, itemDeletedFlux)
