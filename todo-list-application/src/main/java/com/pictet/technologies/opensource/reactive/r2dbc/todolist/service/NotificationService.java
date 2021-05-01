@@ -33,7 +33,7 @@ public class NotificationService {
      * Listen to a postgreSQL topic
      *
      * @param topic Topic to which the connection needs to subscribe to
-     * @param clazz class of parameter of the notification (used for deserialization)
+     * @param clazz class of the notification parameter (used for deserialization)
      * @return the notification parameters
      */
     public <T> Flux<T> listen(final NotificationTopic topic, final Class<T> clazz) {
@@ -97,7 +97,7 @@ public class NotificationService {
     }
 
     /**
-     * Execute the SQL statement used to listen to a given topic name
+     * Execute the SQL statement used to listen to a given topic 
      * @param topicName Name of the topic to listen to
      */
     private void executeListenStatement(String topicName) {
@@ -105,7 +105,7 @@ public class NotificationService {
     }
 
     /**
-     * Execute the SQL statement used to unlisten from a given topic name
+     * Execute the SQL statement used to unlisten from a given topic
      * @param topicName Name of the topic to unlisten from
      */
     private void executeUnlistenStatement(String topicName) {
@@ -115,7 +115,7 @@ public class NotificationService {
     /**
      * Create a PostgreSQL database connection
      *
-     * @return the created connection, returns synchronously
+     * @return the created connection (synchronously)
      */
     private PostgresqlConnection createConnection() {
 
@@ -125,15 +125,15 @@ public class NotificationService {
     }
 
     /**
-     * Create an object mapper aiming at converting the json notification
-     * to the entities
+     * Create an object mapper used to convert the json notification
+     * parameters to entities
      *
      * @return the object mapper
      */
     private ObjectMapper createObjectMapper() {
         return new ObjectMapper()
                 .registerModule(new JavaTimeModule())
-                // This snake case strategy is needed to match the DB column names with the entity field names
+                // This strategy is needed to match the DB column names with the entity field names
                 .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
     }
 
