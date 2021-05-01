@@ -36,7 +36,7 @@ public class NotificationService {
      * @param clazz class of parameter of the notification (used for deserialization)
      * @return the notification parameters
      */
-    public <T> Flux<T> listen(final NotificationTopic topic, Class<T> clazz) {
+    public <T> Flux<T> listen(final NotificationTopic topic, final Class<T> clazz) {
 
         // Listen to all topics if we are not already listened
         final String topicName = topic.getTopicName();
