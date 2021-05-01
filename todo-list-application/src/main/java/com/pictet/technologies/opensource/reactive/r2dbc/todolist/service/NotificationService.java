@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.NotificationDeserializationException;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic;
-import io.r2dbc.postgresql.api.Notification;
+import io.micrometer.core.instrument.util.StringUtils;
 import io.r2dbc.postgresql.api.PostgresqlConnection;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.RequiredArgsConstructor;
@@ -52,10 +52,12 @@ public class NotificationService {
         // Get the notifications for the provided topics
         return connection.getNotifications()
                 .filter(notification -> topicName.equals(notification.getName()) && notification.getParameter() != null)
-                .map(Notification::getParameter)
-                .handle((param, sink) -> {
+                .handle((notification, sink) -> {
+                    final String json = notification.getParameter();
                     try {
-                        sink.next(objectMapper.readValue(param, clazz));
+                        if(!StringUtils.isBlank(json)) {
+                            sink.next(objectMapper.readValue(json, clazz));
+                        }
                     } catch (JsonProcessingException e) {
                         Mono.error(
                                 new NotificationDeserializationException(topic, e));
@@ -80,7 +82,6 @@ public class NotificationService {
 
             watchedTopicNames.remove(topicName);
         }
-
     }
 
     @PostConstruct

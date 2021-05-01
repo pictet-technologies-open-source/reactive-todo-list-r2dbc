@@ -66,6 +66,11 @@
       <artifactId>springfox-boot-starter</artifactId>
       <version>3.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.11</version>
+    </dependency>
 
     <!-- Database -->
      <dependency>
@@ -102,7 +107,6 @@
       <artifactId>r2dbc-h2</artifactId>
       <scope>test</scope>
     </dependency>
-
 
   </dependencies>
 
