@@ -1,4 +1,4 @@
-package com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.notification;
+package com.pictet.technologies.opensource.reactive.r2dbc.todolist.model;
 
 import lombok.Getter;
 

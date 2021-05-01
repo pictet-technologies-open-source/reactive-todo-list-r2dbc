@@ -1,13 +1,16 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.controller;
 
 
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper.ItemMapper;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemPatchResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemUpdateResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.NewItemResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.Event;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.HeartBeat;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.ItemDeleted;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.ItemSaved;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper.ItemMapper;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.NotificationService;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.ItemService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +24,10 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
 import java.time.Duration;
 
+import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_DELETED;
+import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_SAVED;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
@@ -36,6 +40,7 @@ import static org.springframework.http.ResponseEntity.noContent;
 @Slf4j
 public class ItemController {
 
+    private final NotificationService notificationService;
     private final ItemService itemService;
     private final ItemMapper itemMapper;
 
@@ -112,7 +117,15 @@ public class ItemController {
     @GetMapping("/events")
     public Flux<ServerSentEvent<Event>> listenToEvents() {
 
-        return itemService.listenToEvents()
+        final Flux<Event> itemSavedFlux =
+                this.notificationService.executeListenStatement(ITEM_SAVED, Item.class)
+                        .map(item -> new ItemSaved().setItem(itemMapper.toResource(item)));
+
+        final Flux<Event> itemDeletedFlux =
+                this.notificationService.executeListenStatement(ITEM_DELETED, Item.class)
+                        .map(item -> new ItemDeleted().setItemId(item.getId()));
+
+        return Flux.merge(itemSavedFlux, itemDeletedFlux)
                 .map(event -> ServerSentEvent.<Event>builder()
                         .retry(Duration.ofSeconds(4L))
                         .event(event.getClass().getSimpleName())

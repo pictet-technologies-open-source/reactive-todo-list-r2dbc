@@ -1,4 +1,4 @@
-package com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper;
+package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper;
 
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemResource;
