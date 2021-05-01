@@ -37,7 +37,7 @@ public class NotificationService {
      * @param clazz class of parameter of the notification (used for deserialization)
      * @return the notification parameters
      */
-    public <T> Flux<T> executeListenStatement(@NonNull final NotificationTopic topic, @NonNull Class<T> clazz) {
+    public <T> Flux<T> listenTopic(@NonNull final NotificationTopic topic, @NonNull Class<T> clazz) {
 
         // Listen to all topics if we are not already listened
         final String topicName = topic.getTopicName();
@@ -66,11 +66,11 @@ public class NotificationService {
     }
 
     /**
-     * Unlisten some postgreSQL topics
+     * Unlisten from a postgreSQL topic
      *
-     * @param topic Topis to which the connection needs to unsubscribe from
+     * @param topic Topic to which the connection needs to unsubscribe from
      */
-    public void unlistenTopics(final NotificationTopic topic) {
+    public void unlistenTopic(final NotificationTopic topic) {
 
         final String topicName = topic.getTopicName();
 
