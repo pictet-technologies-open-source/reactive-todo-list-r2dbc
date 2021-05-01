@@ -10,7 +10,6 @@ import io.micrometer.core.instrument.util.StringUtils;
 import io.r2dbc.postgresql.api.PostgresqlConnection;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,7 +36,7 @@ public class NotificationService {
      * @param clazz class of parameter of the notification (used for deserialization)
      * @return the notification parameters
      */
-    public <T> Flux<T> listen(@NonNull final NotificationTopic topic, @NonNull Class<T> clazz) {
+    public <T> Flux<T> listen(final NotificationTopic topic, Class<T> clazz) {
 
         // Listen to all topics if we are not already listened
         final String topicName = topic.getTopicName();
