@@ -53,13 +53,14 @@ public class NotificationService {
                 .filter(notification -> topicName.equals(notification.getName()) && notification.getParameter() != null)
                 .handle((notification, sink) -> {
                     final String json = notification.getParameter();
-                    try {
-                        if(!StringUtils.isBlank(json)) {
-                            sink.next(objectMapper.readValue(json, clazz));
-                        }
-                    } catch (JsonProcessingException e) {
+                    if(!StringUtils.isBlank(json)) {
+                      try {
+                         sink.next(objectMapper.readValue(json, clazz));
+                      }
+                      catch (JsonProcessingException e) {
                         Mono.error(
                                 new NotificationDeserializationException(topic, e));
+                      }
                     }
                 });
     }
