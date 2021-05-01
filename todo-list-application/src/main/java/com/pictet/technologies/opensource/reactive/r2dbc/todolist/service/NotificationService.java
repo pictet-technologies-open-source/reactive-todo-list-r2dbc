@@ -48,7 +48,7 @@ public class NotificationService {
             }
         }
 
-        // Get the notifications for the provided topics
+        // Get the notifications
         return connection.getNotifications()
                 .filter(notification -> topicName.equals(notification.getName()) && notification.getParameter() != null)
                 .handle((notification, sink) -> {
