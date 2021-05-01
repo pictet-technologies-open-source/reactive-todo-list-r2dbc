@@ -78,9 +78,8 @@ public class NotificationService {
 
             if (watchedTopicNames.contains(topicName)) {
                 executeUnlistenStatement(topicName);
+                watchedTopicNames.remove(topicName);
             }
-
-            watchedTopicNames.remove(topicName);
         }
     }
 
