@@ -151,7 +151,7 @@ export class ItemBoardComponent implements OnInit, OnDestroy {
   }
 
   private onDeleted(e) {
-    this.removeItem(e.itemId)
+    this.removeItem(e.itemId);
   }
 
   private onSaved(e) {
