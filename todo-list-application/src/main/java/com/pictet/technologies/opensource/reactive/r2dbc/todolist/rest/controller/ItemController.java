@@ -1,7 +1,6 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.controller;
 
 
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemPatchResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemUpdateResource;
@@ -10,7 +9,6 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.ItemDeleted;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.ItemSaved;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper.ItemMapper;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.NotificationService;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.ItemService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +24,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.Duration;
 
-import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_DELETED;
-import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_SAVED;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
@@ -40,7 +36,6 @@ import static org.springframework.http.ResponseEntity.noContent;
 @Slf4j
 public class ItemController {
 
-    private final NotificationService notificationService;
     private final ItemService itemService;
     private final ItemMapper itemMapper;
 
@@ -118,12 +113,12 @@ public class ItemController {
     public Flux<ServerSentEvent<Event>> listenToEvents() {
 
         final Flux<Event> itemSavedFlux =
-                this.notificationService.listen(ITEM_SAVED, Item.class)
+                this.itemService.listenToSavedItems()
                         .map(itemMapper::toResource)
                         .map(ItemSaved::new);
 
         final Flux<Event> itemDeletedFlux =
-                this.notificationService.listen(ITEM_DELETED, Item.class)
+                this.itemService.listenToDeletedItems()
                         .map(itemMapper::toResource)
                         .map(ItemResource::getId)
                         .map(ItemDeleted::new);
