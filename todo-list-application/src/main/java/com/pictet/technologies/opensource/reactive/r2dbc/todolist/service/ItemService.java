@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_DELETED;
+import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_SAVED;
+
 @Service
 @RequiredArgsConstructor
 public class ItemService {
@@ -18,6 +21,7 @@ public class ItemService {
     private static final Sort DEFAULT_SORT = Sort.by(Sort.Order.by("lastModifiedDate"));
 
     private final ItemRepository itemRepository;
+    private final NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public Flux<Item> findAll() {
@@ -60,6 +64,25 @@ public class ItemService {
                         sink.next(item);
                     }
                 });
+    }
+
+
+    /**
+     * Listen to all saved items
+     * @return the saved items
+     */
+    public Flux<Item> listenToSavedItems() {
+
+        return this.notificationService.listen(ITEM_SAVED, Item.class);
+    }
+
+    /**
+     * Listen to all deleted items
+     * @return the deleted items
+     */
+    public Flux<Item> listenToDeletedItems() {
+
+        return this.notificationService.listen(ITEM_DELETED, Item.class);
     }
 
     private Mono<Boolean> verifyExistence(Long id) {
