@@ -15,6 +15,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table
 @EqualsAndHashCode(of = "id")
@@ -37,10 +39,13 @@ public class Item {
     @NotNull
     private ItemStatus status = ItemStatus.TODO;
 
+    private List<Person> assignees = new ArrayList<>();
+
     @CreatedDate
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
+
 
 }

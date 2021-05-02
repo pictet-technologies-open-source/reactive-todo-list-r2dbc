@@ -56,3 +56,38 @@ databaseChangeLog:
               splitStatements: false
               path: db/notification/item_deleted_trigger.sql
               stripComments:  true
+
+  -  changeSet:
+       id: 03-add-users
+       author:  ajacquot
+       changes:
+         - createTable:
+             schema: public
+             tableName: person
+             columns:
+               - column:
+                   name: id
+                   type: int
+                   autoIncrement: true
+                   constraints:
+                     primaryKey: true
+                     nullable: false
+               - column:
+                   name: version
+                   type: int
+                   constraints:
+                     nullable: false
+               - column:
+                   name: first_name
+                   type: varchar(100)
+                   constraints:
+                     nullable: false
+               - column:
+                   name: last_name
+                   type: varchar(100)
+                   constraints:
+                     nullable: false
+         -  sqlFile:
+              encoding: utf-8
+              splitStatements: false
+              path: db/mock/insert_mock_people.sql
