@@ -49,18 +49,16 @@ public class NotificationService {
         }
 
         // Get the notifications
-        return connection.getNotifications()
+        return getConnection().getNotifications()
                 .filter(notification -> topicName.equals(notification.getName()) && notification.getParameter() != null)
                 .handle((notification, sink) -> {
                     final String json = notification.getParameter();
-                    if(!StringUtils.isBlank(json)) {
-                      try {
-                         sink.next(objectMapper.readValue(json, clazz));
-                      }
-                      catch (JsonProcessingException e) {
-                        Mono.error(
-                                new NotificationDeserializationException(topic, e));
-                      }
+                    if (!StringUtils.isBlank(json)) {
+                        try {
+                            sink.next(objectMapper.readValue(json, clazz));
+                        } catch (JsonProcessingException e) {
+                            Mono.error(new NotificationDeserializationException(topic, e));
+                        }
                     }
                 });
     }
@@ -86,42 +84,52 @@ public class NotificationService {
     @PostConstruct
     private void postConstruct() {
 
-        this.connection = createConnection();
         this.objectMapper = createObjectMapper();
     }
 
     @PreDestroy
     private void preDestroy() {
 
-        this.connection.close().subscribe();
+        this.getConnection().close().subscribe();
     }
 
     /**
-     * Execute the SQL statement used to listen to a given topic 
+     * Execute the SQL statement used to listen to a given topic
+     *
      * @param topicName Name of the topic to listen to
      */
     private void executeListenStatement(String topicName) {
-        connection.createStatement("LISTEN " + topicName).execute().subscribe();
+        getConnection().createStatement("LISTEN " + topicName).execute().subscribe();
     }
 
     /**
      * Execute the SQL statement used to unlisten from a given topic
+     *
      * @param topicName Name of the topic to unlisten from
      */
     private void executeUnlistenStatement(String topicName) {
-        connection.createStatement("UNLISTEN " + topicName).execute().subscribe();
+        getConnection().createStatement("UNLISTEN " + topicName).execute().subscribe();
     }
 
     /**
-     * Create a PostgreSQL database connection
+     * Get or create a PostgreSQL database connection
      *
-     * @return the created connection (synchronously)
+     * @return the connection created synchronously
      */
-    private PostgresqlConnection createConnection() {
+    private PostgresqlConnection getConnection() {
 
-        return Mono.from(connectionFactory.create())
-                .cast(PostgresqlConnection.class)
-                .block();
+        if (connection == null) {
+
+            synchronized (NotificationService.class) {
+                if (connection == null) {
+                    connection = Mono.from(connectionFactory.create())
+                            .cast(PostgresqlConnection.class)
+                            .block();
+                }
+            }
+        }
+
+        return this.connection;
     }
 
     /**

@@ -6,29 +6,27 @@ import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
-import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
-import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.lang.NonNull;
 
 @Configuration
-@EnableR2dbcRepositories
-@EnableR2dbcAuditing
-public class DatabaseConfiguration extends AbstractR2dbcConfiguration {
+@Profile(value = "!test")
+public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
 
-    @Value("${database.name:todolist}")
+    @Value("${database.name}")
     private String database;
 
-    @Value("${database.host:127.0.0.1}")
+    @Value("${database.host}")
     private String host;
 
     @Value("${database.port:5432}")
     private int port;
 
-    @Value("${database.username:admin}")
+    @Value("${database.username}")
     private String username;
 
-    @Value("${database.password:password}")
+    @Value("${database.password}")
     private String password;
 
     @Override
