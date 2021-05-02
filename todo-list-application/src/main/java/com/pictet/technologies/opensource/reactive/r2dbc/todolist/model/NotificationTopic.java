@@ -8,12 +8,6 @@ import lombok.Getter;
 @Getter
 public enum NotificationTopic {
 
-    ITEM_SAVED("item_saved"),
-    ITEM_DELETED("item_deleted");
-
-    private final String topicName;
-
-    NotificationTopic(final String topicName) {
-        this.topicName = topicName;
-    }
+    ITEM_SAVED,
+    ITEM_DELETED;
 }

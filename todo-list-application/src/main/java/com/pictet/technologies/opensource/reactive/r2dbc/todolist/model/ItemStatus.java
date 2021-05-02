@@ -4,6 +4,6 @@ public enum ItemStatus {
 
     TODO,
     IN_PROGRESS,
-    DONE,
+    DONE;
 
 }

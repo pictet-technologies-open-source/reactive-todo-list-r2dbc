@@ -2,12 +2,12 @@ package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.even
 
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemResource;
 import lombok.Data;
+import lombok.Value;
 import lombok.experimental.Accessors;
 
-@Data
-@Accessors(chain = true)
+@Value
 public class ItemSaved implements Event {
 
-    private ItemResource item;
+    ItemResource item;
 
 }

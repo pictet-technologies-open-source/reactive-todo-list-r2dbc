@@ -31,9 +31,7 @@
            cdkDrag class="item-div">
 
         <app-item [item]="item"
-                  [readonly]="dragAndDropInProgress || actionInProgress"
-                  (itemDeleted)="refresh()"
-                  (itemUpdated)="refresh()"></app-item>
+                  [readonly]="dragAndDropInProgress || actionInProgress"></app-item>
 
       </div>
 

@@ -5,7 +5,7 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Notifica
 public class NotificationDeserializationException extends RuntimeException {
 
     public NotificationDeserializationException(NotificationTopic topic, Throwable cause) {
-        super(String.format("Cannot deserialize the notification for topic [%s]", topic.getTopicName()), cause);
+        super(String.format("Cannot deserialize the notification for topic [%s]", topic), cause);
     }
 
 }

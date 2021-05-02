@@ -3,7 +3,7 @@ CREATE FUNCTION notify_item_saved()
 AS
    $$
 BEGIN
-   PERFORM pg_notify('item_saved',  row_to_json(NEW)::text);
+   PERFORM pg_notify('ITEM_SAVED',  row_to_json(NEW)::text);
    RETURN NULL;
 END;
 $$

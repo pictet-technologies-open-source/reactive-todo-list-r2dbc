@@ -3,7 +3,7 @@ CREATE FUNCTION notify_item_deleted()
 AS
    $$
 BEGIN
-   PERFORM pg_notify('item_deleted', row_to_json(OLD)::text);
+   PERFORM pg_notify('ITEM_DELETED', row_to_json(OLD)::text);
    RETURN NULL;
 END;
 $$

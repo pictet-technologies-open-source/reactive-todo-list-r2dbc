@@ -24,7 +24,7 @@ import java.util.Set;
 public class NotificationService {
 
     private final ConnectionFactory connectionFactory;
-    private final Set<String> watchedTopicNames = new HashSet<>();
+    private final Set<NotificationTopic> watchedTopics = new HashSet<>();
 
     private PostgresqlConnection connection;
     private ObjectMapper objectMapper;
@@ -39,20 +39,20 @@ public class NotificationService {
     public <T> Flux<T> listen(final NotificationTopic topic, final Class<T> clazz) {
 
         // Listen to the topic
-        final String topicName = topic.getTopicName();
-
-        synchronized (watchedTopicNames) {
-            if (!watchedTopicNames.contains(topicName)) {
-                executeListenStatement(topicName);
-                watchedTopicNames.add(topicName);
+        synchronized (watchedTopics) {
+            if (!watchedTopics.contains(topic)) {
+                executeListenStatement(topic);
+                watchedTopics.add(topic);
             }
         }
 
         // Get the notifications
         return getConnection().getNotifications()
-                .filter(notification -> topicName.equals(notification.getName()) && notification.getParameter() != null)
+                .filter(notification -> topic.name().equals(notification.getName()) && notification.getParameter() != null)
                 .handle((notification, sink) -> {
+
                     final String json = notification.getParameter();
+
                     if (!StringUtils.isBlank(json)) {
                         try {
                             sink.next(objectMapper.readValue(json, clazz));
@@ -70,20 +70,17 @@ public class NotificationService {
      */
     public void unlisten(final NotificationTopic topic) {
 
-        final String topicName = topic.getTopicName();
+        synchronized (watchedTopics) {
 
-        synchronized (watchedTopicNames) {
-
-            if (watchedTopicNames.contains(topicName)) {
-                executeUnlistenStatement(topicName);
-                watchedTopicNames.remove(topicName);
+            if (watchedTopics.contains(topic)) {
+                executeUnlistenStatement(topic);
+                watchedTopics.remove(topic);
             }
         }
     }
 
     @PostConstruct
     private void postConstruct() {
-
         this.objectMapper = createObjectMapper();
     }
 
@@ -96,19 +93,21 @@ public class NotificationService {
     /**
      * Execute the SQL statement used to listen to a given topic
      *
-     * @param topicName Name of the topic to listen to
+     * @param topic Name of the topic to listen to
      */
-    private void executeListenStatement(String topicName) {
-        getConnection().createStatement("LISTEN " + topicName).execute().subscribe();
+    private void executeListenStatement(NotificationTopic topic) {
+        // Topic in upper-case must be surround by quotes
+        getConnection().createStatement(String.format("LISTEN \"%s\"", topic)).execute().subscribe();
     }
 
     /**
      * Execute the SQL statement used to unlisten from a given topic
      *
-     * @param topicName Name of the topic to unlisten from
+     * @param topic Name of the topic to unlisten from
      */
-    private void executeUnlistenStatement(String topicName) {
-        getConnection().createStatement("UNLISTEN " + topicName).execute().subscribe();
+    private void executeUnlistenStatement(NotificationTopic topic) {
+        // Topic in upper-case must be surround by quotes
+        getConnection().createStatement(String.format("UNLISTEN \"%s\"", topic)).execute().subscribe();
     }
 
     /**
