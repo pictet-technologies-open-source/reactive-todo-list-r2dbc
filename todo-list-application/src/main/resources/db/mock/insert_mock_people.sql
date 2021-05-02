@@ -3,5 +3,5 @@ values
 (1, 'Richard', 'Countin'),
 (1, 'Nathalie', 'Queen'),
 (1, 'Benito', 'Micorazon'),
-(1, 'Vince', 'Power');
+(1, 'Vincent', 'Boss');
 
