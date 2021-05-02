@@ -6,13 +6,14 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Optional;
 
 @Data
 @Accessors(chain = true)
 public class ItemPatchResource {
 
-    private Optional<@NotBlank String> description;
+    private Optional<@NotBlank @Size(max=4000) String> description;
     private Optional<@NotNull ItemStatus> status;
 
 }

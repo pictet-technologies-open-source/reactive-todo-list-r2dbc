@@ -11,6 +11,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Table
@@ -27,8 +30,11 @@ public class Item {
     @Version
     private Long version;
 
+    @Size(max=4000)
+    @NotBlank
     private String description;
 
+    @NotNull
     private ItemStatus status = ItemStatus.TODO;
 
     @CreatedDate
