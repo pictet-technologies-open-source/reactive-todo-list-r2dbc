@@ -39,7 +39,7 @@ public class ItemService {
     }
 
     @Transactional
-    public Mono<Void> deleteById(final Long id, Long version) {
+    public Mono<Void> deleteById(final Long id, final Long version) {
 
         return findById(id, version).flatMap(itemRepository::delete);
     }
@@ -85,7 +85,7 @@ public class ItemService {
         return this.notificationService.listen(ITEM_DELETED, Item.class);
     }
 
-    private Mono<Boolean> verifyExistence(Long id) {
+    private Mono<Boolean> verifyExistence(final Long id) {
         return itemRepository.existsById(id).handle((exists, sink) -> {
             if (Boolean.FALSE.equals(exists)) {
                 sink.error(new ItemNotFoundException(id));
