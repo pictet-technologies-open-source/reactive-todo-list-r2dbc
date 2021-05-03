@@ -95,7 +95,7 @@ public class NotificationService {
      *
      * @param topic Name of the topic to listen to
      */
-    private void executeListenStatement(NotificationTopic topic) {
+    private void executeListenStatement(final NotificationTopic topic) {
         
         // Topic in upper-case must be surrounded by quotes
         getConnection().createStatement(String.format("LISTEN \"%s\"", topic)).execute().subscribe();
@@ -106,7 +106,7 @@ public class NotificationService {
      *
      * @param topic Name of the topic to unlisten from
      */
-    private void executeUnlistenStatement(NotificationTopic topic) {
+    private void executeUnlistenStatement(final NotificationTopic topic) {
         
         // Topic in upper-case must be surrounded by quotes
         getConnection().createStatement(String.format("UNLISTEN \"%s\"", topic)).execute().subscribe();
