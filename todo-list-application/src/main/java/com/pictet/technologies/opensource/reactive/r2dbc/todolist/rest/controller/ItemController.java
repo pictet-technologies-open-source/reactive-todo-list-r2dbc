@@ -51,8 +51,8 @@ public class ItemController {
     @ApiOperation("Update an existing item")
     @PutMapping(value = "/{id}")
     public Mono<ResponseEntity<Void>> update(@PathVariable @NotNull final Long id,
-                                             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) Long version,
-                                             @Valid @RequestBody ItemUpdateResource itemUpdateResource) {
+                                             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Long version,
+                                             @Valid @RequestBody final ItemUpdateResource itemUpdateResource) {
 
 
         // Find the item and update the instance
@@ -67,8 +67,8 @@ public class ItemController {
     @PatchMapping(value = "/{id}")
     @SuppressWarnings({"OptionalAssignedToNull", "OptionalGetWithoutIsPresent"})
     public Mono<ResponseEntity<Void>> patch(@PathVariable @NotNull final Long id,
-                                            @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) Long version,
-                                            @Valid @RequestBody ItemPatchResource patch) {
+                                            @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Long version,
+                                            @Valid @RequestBody final ItemPatchResource patch) {
 
         return itemService.findById(id, version).map(item -> {
             if (patch.getDescription() != null) {
@@ -87,7 +87,7 @@ public class ItemController {
 
     @ApiOperation("Find an item by its id")
     @GetMapping(value = "/{id}", produces = {APPLICATION_JSON_VALUE})
-    public Mono<ItemResource> findById(@PathVariable Long id) {
+    public Mono<ItemResource> findById(@PathVariable final Long id) {
 
         return itemService.findById(id, null).map(itemMapper::toResource);
     }
@@ -104,7 +104,7 @@ public class ItemController {
     @ApiOperation("Delete an item")
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> delete(@PathVariable final Long id,
-                                             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) Long version) {
+                                             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Long version) {
 
         return itemService.deleteById(id, version).map(empty -> noContent().build());
     }
