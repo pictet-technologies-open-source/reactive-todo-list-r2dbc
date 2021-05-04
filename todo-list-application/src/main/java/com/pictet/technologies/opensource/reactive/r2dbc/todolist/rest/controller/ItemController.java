@@ -119,8 +119,7 @@ public class ItemController {
 
         final Flux<Event> itemDeletedFlux =
                 this.itemService.listenToDeletedItems()
-                        .map(itemMapper::toResource)
-                        .map(ItemResource::getId)
+                        .map(Item::getId)
                         .map(ItemDeleted::new);
 
         return Flux.merge(itemSavedFlux, itemDeletedFlux)
