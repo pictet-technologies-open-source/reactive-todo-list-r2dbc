@@ -1,6 +1,6 @@
 # Todo List application
 
-### pgADdmin (Postgres web client) 
+### pgAdmin (Postgres web client) 
 
 http://localhost:5050/
 
