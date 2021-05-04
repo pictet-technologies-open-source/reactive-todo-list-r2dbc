@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Accessors(chain = true)
-public class Person {
+public class Tag {
 
     @Id
     private Long id;
@@ -31,16 +31,11 @@ public class Person {
 
     @NotBlank
     @Size(max=100)
-    private String firstName;
-
-    @NotBlank
-    @Size(max=100)
-    private String lastName;
+    private String name;
 
     @CreatedDate
     private LocalDateTime createdDate;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
-
 }

@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Version;
+import org.springframework.data.annotation.*;
 import org.springframework.data.relational.core.mapping.Table;
 
 import javax.validation.constraints.NotBlank;
@@ -39,7 +36,11 @@ public class Item {
     @NotNull
     private ItemStatus status = ItemStatus.TODO;
 
-    private List<Person> assignees = new ArrayList<>();
+    @Transient
+    private Person assignee;
+
+    @Transient
+    private List<Tag> tags;
 
     @CreatedDate
     private LocalDateTime createdDate;
