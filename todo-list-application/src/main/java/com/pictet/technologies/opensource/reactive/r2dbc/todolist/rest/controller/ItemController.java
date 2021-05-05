@@ -1,6 +1,7 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.controller;
 
 
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemPatchResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemUpdateResource;
