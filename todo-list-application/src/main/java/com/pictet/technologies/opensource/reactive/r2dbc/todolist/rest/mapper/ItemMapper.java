@@ -18,12 +18,16 @@ public interface ItemMapper {
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     @Mapping(target = "version", ignore = true)
+    @Mapping(target = "assignee", ignore = true)
+    @Mapping(target = "tags", ignore = true)
     Item toModel(NewItemResource item);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     @Mapping(target = "version", ignore = true)
+    @Mapping(target = "assignee", ignore = true)
+    @Mapping(target = "tags", ignore = true)
     void update(ItemUpdateResource updateResource, @MappingTarget Item item);
 
 

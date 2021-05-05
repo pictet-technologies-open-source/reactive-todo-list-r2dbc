@@ -101,7 +101,6 @@ public class ItemController {
                 .map(itemMapper::toResource);
     }
 
-
     @ApiOperation("Delete an item")
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> delete(@PathVariable final Long id,
