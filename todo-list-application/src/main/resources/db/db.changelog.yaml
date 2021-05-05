@@ -178,6 +178,7 @@ databaseChangeLog:
   - changeSet:
       id: 04-add-mock-data
       author: ajacquot
+      dbms: '!h2'
       changes:
         - sqlFile:
             encoding: utf-8
