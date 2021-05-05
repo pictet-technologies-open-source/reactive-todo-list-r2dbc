@@ -7,8 +7,8 @@
       </mat-card-title>
       <mat-card-content>
         <div class="description">
-          <div *ngIf="item.tags" style="padding-bottom: 10px;">
-            <span *ngFor="let tag of item.tags" style="padding-right: 5px; font-size: 12px">
+          <div *ngIf="item.tags" class="tags">
+            <span *ngFor="let tag of item.tags" class="tag">
               <a href="https://www.google.com/search?q={{tag.name}}">
                 &#x23;{{tag.name}}
               </a>

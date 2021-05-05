@@ -62,3 +62,12 @@
   font-family: sans-serif;
   text-align: center;
 }
+
+.tags {
+  padding-bottom: 10px;
+
+  .tag {
+    padding-right: 5px;
+    font-size: 12px;
+  }
+}
