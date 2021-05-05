@@ -2,9 +2,21 @@
   <div style="width: 10%"></div>
   <div style="width: 80%;" (mouseup)="displayMenu = true" (mousedown)="displayMenu = false">
     <mat-card class="item-card">
+      <mat-card-title class="wrap assignee-section">
+        <span>{{getAssigneeName()}}</span>
+      </mat-card-title>
       <mat-card-content>
-        <div class="item-description">
-          <span>{{item.description}}</span>
+        <div class="description">
+          <div *ngIf="item.tags" style="padding-bottom: 10px;">
+            <span *ngFor="let tag of item.tags" style="padding-right: 5px; font-size: 12px">
+              <a href="https://www.google.com/search?q={{tag.name}}">
+                &#x23;{{tag.name}}
+              </a>
+            </span>
+          </div>
+          <div>
+            <span>{{item.description}}</span>
+          </div>
         </div>
       </mat-card-content>
       <mat-card-footer>

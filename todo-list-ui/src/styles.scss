@@ -8,3 +8,9 @@ body,html {
 .error-message {
   white-space: pre-wrap
 }
+
+.wrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

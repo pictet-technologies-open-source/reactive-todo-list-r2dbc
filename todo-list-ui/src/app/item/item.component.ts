@@ -62,7 +62,11 @@ export class ItemComponent {
     return DateUtils.toDuration(this.item.lastModifiedDate).asSeconds() < 5;
   }
 
-  displayActionButtons() {
+  displayActionButtons(): boolean {
     return !this.readonly && this.displayMenu;
+  }
+
+  getAssigneeName(): string {
+    return this.item.assignee ? `${this.item.assignee.firstName} ${this.item.assignee.lastName}` : 'Unassigned';
   }
 }

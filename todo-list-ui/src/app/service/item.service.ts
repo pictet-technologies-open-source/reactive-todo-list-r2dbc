@@ -32,6 +32,10 @@ export class ItemService {
       // Process incoming messages
       eventSource.onmessage = (event) => {
         const item = JSON.parse(event.data);
+
+        // item.assignee = { id: 1, firstName: 'John', lastName: 'GuapitoDelLaCruz'};
+        // item.tags = [{ id: 1, name: 'Work'},{ id: 1, name: 'Private'}];
+
         this.ngZone.run(() => subscriber.next(item));
       };
 

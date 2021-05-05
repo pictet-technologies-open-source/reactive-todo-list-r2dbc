@@ -19,6 +19,7 @@ import {ItemSaveDialogComponent} from './item-save-dialog/item-save-dialog.compo
 import {HttpErrorsInterceptor} from './interceptor/http-errors-interceptor';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { MomentHumanizePipe } from './pipe/moment-humanize.pipe';
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
   declarations: [
@@ -28,22 +29,22 @@ import { MomentHumanizePipe } from './pipe/moment-humanize.pipe';
     ItemSaveDialogComponent,
     MomentHumanizePipe
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HttpClientModule,
-        MatCardModule,
-        MatButtonModule,
-        MatIconModule,
-        MatTooltipModule,
-        MatToolbarModule,
-        BrowserAnimationsModule,
-        MatDialogModule,
-        FormsModule,
-        FlexModule,
-        DragDropModule,
-        MatSnackBarModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatToolbarModule,
+    BrowserAnimationsModule,
+    MatDialogModule,
+    FormsModule,
+    FlexModule,
+    DragDropModule,
+    MatSnackBarModule
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

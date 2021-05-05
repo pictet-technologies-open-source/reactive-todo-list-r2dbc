@@ -3,11 +3,11 @@
   background-color: lightyellow;
   margin: 0;
   overflow: auto;
-  min-height: 75px;
+  min-height: 90px;
   max-height: 200px;
 }
 
-.item-description {
+.description {
   padding-right: 20px;
   padding-left: 5px;
   word-break: break-all;
@@ -52,3 +52,13 @@
   }
 }
 
+.assignee-section {
+  width: 100%;
+  color: black;
+  background-color: #74f174;
+  border-radius: 25px;
+  border: 2px solid darkgray;
+  font-size: 16px;
+  font-family: sans-serif;
+  text-align: center;
+}
