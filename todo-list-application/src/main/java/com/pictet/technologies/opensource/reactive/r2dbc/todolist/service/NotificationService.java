@@ -95,8 +95,9 @@ public class NotificationService {
      *
      * @param topic Name of the topic to listen to
      */
-    private void executeListenStatement(NotificationTopic topic) {
-        // Topic in upper-case must be surround by quotes
+    private void executeListenStatement(final NotificationTopic topic) {
+        
+        // Topic in upper-case must be surrounded by quotes
         getConnection().createStatement(String.format("LISTEN \"%s\"", topic)).execute().subscribe();
     }
 
@@ -105,8 +106,9 @@ public class NotificationService {
      *
      * @param topic Name of the topic to unlisten from
      */
-    private void executeUnlistenStatement(NotificationTopic topic) {
-        // Topic in upper-case must be surround by quotes
+    private void executeUnlistenStatement(final NotificationTopic topic) {
+        
+        // Topic in upper-case must be surrounded by quotes
         getConnection().createStatement(String.format("UNLISTEN \"%s\"", topic)).execute().subscribe();
     }
 
@@ -138,6 +140,7 @@ public class NotificationService {
      * @return the object mapper
      */
     private ObjectMapper createObjectMapper() {
+       
         return new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 // This strategy is needed to match the DB column names with the entity field names
