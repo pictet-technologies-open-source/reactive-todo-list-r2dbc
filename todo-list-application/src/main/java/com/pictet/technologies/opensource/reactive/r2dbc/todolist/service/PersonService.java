@@ -1,0 +1,40 @@
+package com.pictet.technologies.opensource.reactive.r2dbc.todolist.service;
+
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.ItemNotFoundException;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Person;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.PersonRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+@Service
+@RequiredArgsConstructor
+public class PersonService {
+
+    private static final Sort DEFAULT_SORT = Sort.by(Sort.Order.by("firstName,lastName"));
+
+    private final PersonRepository personRepository;
+
+    @Transactional(readOnly = true)
+    public Flux<Person> findAll() {
+        return personRepository.findAll(DEFAULT_SORT);
+    }
+
+    /**
+     * Find a person
+     *
+     * @param id      identifier of the person
+     * @return the person
+     */
+    @Transactional(readOnly = true)
+    public Mono<Person> findById(final Long id) {
+
+        return personRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ItemNotFoundException(id)));
+    }
+
+
+}

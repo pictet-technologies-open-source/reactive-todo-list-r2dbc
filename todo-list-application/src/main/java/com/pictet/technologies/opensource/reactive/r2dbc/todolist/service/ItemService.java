@@ -48,10 +48,9 @@ public class ItemService {
      * Find an item
      *
      * @param id      identifier of the item
-     * @param version expected version to be modified
+     * @param version expected version to be retrieved
      * @return the item
-     * @throws ItemNotFoundException if the item with the provided identifier does not exist
-     */
+^     */
     @Transactional(readOnly = true)
     public Mono<Item> findById(final Long id, final Long version) {
 
