@@ -8,13 +8,11 @@
       <mat-card-content>
         <div class="description">
           <div *ngIf="item.tags" class="tags">
-            <span *ngFor="let tag of item.tags" class="tag">
-              <a href="https://www.google.com/search?q={{tag.name}}">
-                &#x23;{{tag.name}}
-              </a>
+            <span *ngFor="let tag of item.tags; let i = index;" >
+              <span *ngIf="i>0" class="tag-separator">|</span><span>{{tag.name}}</span>
             </span>
           </div>
-          <div>
+          <div style="padding-top: 5px;">
             <span>{{item.description}}</span>
           </div>
         </div>
