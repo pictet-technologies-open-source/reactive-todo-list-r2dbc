@@ -18,8 +18,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {ItemSaveDialogComponent} from './item-save-dialog/item-save-dialog.component';
 import {HttpErrorsInterceptor} from './interceptor/http-errors-interceptor';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import { MomentHumanizePipe } from './pipe/moment-humanize.pipe';
-import {MatChipsModule} from "@angular/material/chips";
+import {MomentHumanizePipe} from './pipe/moment-humanize.pipe';
 
 @NgModule({
   declarations: [

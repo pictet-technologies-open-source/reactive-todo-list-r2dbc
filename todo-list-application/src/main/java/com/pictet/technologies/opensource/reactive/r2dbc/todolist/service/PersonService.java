@@ -14,7 +14,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class PersonService {
 
-    private static final Sort DEFAULT_SORT = Sort.by(Sort.Order.by("firstName,lastName"));
+    // Note that the name of the fields to be sorted on are the DB field names
+    private static final Sort DEFAULT_SORT = Sort.by(Sort.Order.by("first_name,last_name"));
 
     private final PersonRepository personRepository;
 

@@ -1,9 +1,9 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.controller;
 
 
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.PersonResource;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper.PersonMapper;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.PersonService;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.TagResource;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper.TagMapper;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.TagService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,22 +23,22 @@ import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
 @Slf4j
 public class TagController {
 
-    private final PersonService personService;
-    private final PersonMapper personMapper;
+    private final TagService tagService;
+    private final TagMapper tagMapper;
 
     @ApiOperation("Find a person by its id")
     @GetMapping(value = "/{id}", produces = {APPLICATION_JSON_VALUE})
-    public Mono<PersonResource> findById(@PathVariable final Long id) {
+    public Mono<TagResource> findById(@PathVariable final Long id) {
 
-        return personService.findById(id).map(personMapper::toResource);
+        return tagService.findById(id).map(tagMapper::toResource);
     }
 
     @ApiOperation("Get the tags")
     @GetMapping(produces = TEXT_EVENT_STREAM_VALUE)
-    public Flux<PersonResource> getAllItems() {
+    public Flux<TagResource> getAllItems() {
 
-        return personService.findAll()
-                .map(personMapper::toResource);
+        return tagService.findAll()
+                .map(tagMapper::toResource);
     }
 
 }

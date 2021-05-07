@@ -82,7 +82,7 @@ export class ItemBoardComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().pipe(take(1)).subscribe((response) => {
       if (response) {
-        this.itemService.addItem(response)
+        this.itemService.addItem(response.description, response.assignee, response.tags)
           .pipe(finalize(() => { this.stopActionInProgress(); }))
           .subscribe();
       } else {

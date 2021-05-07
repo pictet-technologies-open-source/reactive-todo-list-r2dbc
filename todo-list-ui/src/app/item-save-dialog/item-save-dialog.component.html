@@ -1,7 +1,7 @@
 <div style="overflow: visible">
   <h1 mat-dialog-title>{{item ? 'Update' : 'Create a new item' }}</h1>
   <div mat-dialog-content>
-    <textarea [(ngModel)]="description" style="min-width: 96%; min-height: 100px;"
+    <textarea [(ngModel)]="itemToBeSaved.description" style="min-width: 96%; min-height: 100px;"
               maxLength="4000"></textarea>
   </div>
 
@@ -9,7 +9,7 @@
     <button (click)="onCancel()"
             mat-raised-button>Cancel
     </button>
-    <button [disabled]="!description || !description.trim()" (click)="onOk()"
+    <button [disabled]="!itemToBeSaved.description || !itemToBeSaved.description.trim()" (click)="onOk()"
             mat-raised-button>Save
     </button>
   </div>
