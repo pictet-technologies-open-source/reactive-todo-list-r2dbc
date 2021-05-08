@@ -23,15 +23,21 @@ export class ItemSaveDialogComponent implements OnInit {
               private readonly personService: PersonService,
               private readonly tagService: TagService) {
 
-    this.itemToBeSaved = item ? {
-      id: item.id,
-      description: item.description,
-      assignee: item.assignee,
-      tags: item.tags
-    } : {};
+
   }
 
   ngOnInit(): void {
+
+    this.itemToBeSaved = this.item ? {
+      id: this.item.id,
+      description: this.item.description,
+      assignee: this.item.assignee,
+      tags: this.item.tags ? this.item.tags : []
+    } : { tags: []};
+
+    if(!this.itemToBeSaved.tags) {
+      this.itemToBeSaved.tags = [];
+    }
 
     this.personService.findAll().subscribe(person => {
       this.people.push(person);
@@ -49,6 +55,25 @@ export class ItemSaveDialogComponent implements OnInit {
 
   onOk() {
     this.dialogRef.close(this.item);
+  }
+
+  toggleTagSelected(tag: Tag) {
+    const index = this.getTagIndex(tag);
+    if (index >= 0) {
+      this.itemToBeSaved.tags.splice(index, 1);
+    } else {
+      this.itemToBeSaved.tags.push(tag);
+    }
+  }
+
+
+  isTagSelected(tag: Tag): boolean {
+    return this.getTagIndex(tag) >= 0;
+  }
+
+  private getTagIndex(tag: Tag): number {
+    return (this.itemToBeSaved && this.itemToBeSaved.tags)
+     ? this.itemToBeSaved.tags.map(t => t.id).indexOf(tag.id) : -1;
   }
 
 }

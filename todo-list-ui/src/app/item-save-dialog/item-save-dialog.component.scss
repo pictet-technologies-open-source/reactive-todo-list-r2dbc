@@ -5,3 +5,17 @@
 textarea {
   resize: none;
 }
+
+.tags {
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  .tag {
+  }
+
+  .selected {
+    background-color: green;
+    color: white;
+  }
+}
+
