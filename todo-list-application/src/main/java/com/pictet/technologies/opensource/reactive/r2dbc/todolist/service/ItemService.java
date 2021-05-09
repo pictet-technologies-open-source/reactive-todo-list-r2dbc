@@ -3,6 +3,7 @@ package com.pictet.technologies.opensource.reactive.r2dbc.todolist.service;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.ItemNotFoundException;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.UnexpectedItemVersionException;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Person;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemRepository;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemTagRepository;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.PersonRepository;
@@ -57,7 +58,8 @@ public class ItemService {
      * @param id      identifier of the item
      * @param version expected version to be retrieved
      * @return the item
-^     */
+     * ^
+     */
     @Transactional(readOnly = true)
     public Mono<Item> findById(final Long id, final Long version) {
 
@@ -75,6 +77,7 @@ public class ItemService {
 
     /**
      * Listen to all saved items
+     *
      * @return the saved items
      */
     public Flux<Item> listenToSavedItems() {
@@ -84,6 +87,7 @@ public class ItemService {
 
     /**
      * Listen to all deleted items
+     *
      * @return the ID of the deleted items
      */
     public Flux<Long> listenToDeletedItems() {
@@ -92,14 +96,26 @@ public class ItemService {
                 .map(Item::getId);
     }
 
-    public Flux<Item> loadRelationships(Flux<Item> items) {
+    private Flux<Item> loadRelationships(Flux<Item> items) {
 
-        // FIXME Failing test
         // TODO check ZipWithIterable ?
         // TODO ORDER Tags
         return items.flatMap(item -> Flux.just(item)
-                .zipWith(item.getAssigneeId() != null ? personRepository.findById(item.getAssigneeId()) : Mono.empty())
-                .map(result -> result.getT1().setAssignee(result.getT2()))
+                .zipWith(item.getAssigneeId() != null
+                        ? personRepository.findById(item.getAssigneeId())
+                        : Mono.just(new Person()))
+                .map(result -> {
+                         final Person assignee = result.getT2();
+
+                         if (assignee.getId() != null) {
+                             item.setAssignee(assignee);
+                         } else {
+                             item.setAssignee(null);
+                         }
+
+                         return item;
+                     }
+                )
                 .zipWith(itemTagRepository.findAllByItemId(item.getId())
                         .flatMap(link -> tagRepository.findById(link.getTagId()))
                         .collectList())
