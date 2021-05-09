@@ -1,4 +1,4 @@
-INSERT INTO ITEM_TAGS (item_id, tag_id)
+INSERT INTO ITEM_TAG (item_id, tag_id)
 values
 (1, 2),
 (1, 7),

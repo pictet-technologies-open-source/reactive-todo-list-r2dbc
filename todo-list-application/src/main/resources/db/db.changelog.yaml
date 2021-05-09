@@ -151,29 +151,30 @@ databaseChangeLog:
                  references: person(id)
         - createTable:
             schema: public
-            tableName: item_tags
+            tableName: item_tag
             columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  startWith: 100
+                  constraints:
+                    primaryKey: true
+                    nullable: false
               - column:
                   name: item_id
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_item_tags_item_id
+                    foreignKeyName: fk_item_tag_item_id
                     references: item(id)
               - column:
                   name: tag_id
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_item_tags_tag_id
+                    foreignKeyName: fk_item_tag_tag_id
                     references: tag(id)
-        -  addPrimaryKey:
-             schemaName:  public
-             tableName:  item_tags
-             clustered:  true
-             columnNames:  item_id,tag_id
-             constraintName:  pk_item_tags
-             validate:  true
 
   - changeSet:
       id: 04-add-mock-data

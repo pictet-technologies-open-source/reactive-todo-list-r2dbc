@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Table
@@ -35,6 +34,8 @@ public class Item {
 
     @NotNull
     private ItemStatus status = ItemStatus.TODO;
+
+    private Long assigneeId;
 
     @Transient
     private Person assignee;

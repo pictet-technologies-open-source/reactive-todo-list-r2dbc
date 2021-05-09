@@ -1,7 +1,6 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.controller;
 
 
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemPatchResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemUpdateResource;
@@ -119,7 +118,6 @@ public class ItemController {
 
         final Flux<Event> itemDeletedFlux =
                 this.itemService.listenToDeletedItems()
-                        .map(Item::getId)
                         .map(ItemDeleted::new);
 
         return Flux.merge(itemSavedFlux, itemDeletedFlux)

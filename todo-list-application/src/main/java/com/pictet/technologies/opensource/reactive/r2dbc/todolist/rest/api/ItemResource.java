@@ -24,6 +24,4 @@ public class ItemResource {
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 
-
-
 }
