@@ -22,8 +22,6 @@ export class ItemSaveDialogComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) readonly item: Item,
               private readonly personService: PersonService,
               private readonly tagService: TagService) {
-
-
   }
 
   ngOnInit(): void {

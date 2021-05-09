@@ -94,10 +94,12 @@ public class ItemService {
 
     public Flux<Item> loadRelationships(Flux<Item> items) {
 
+        // FIXME Failing test
+        // TODO check ZipWithIterable ?
+        // TODO ORDER Tags
         return items.flatMap(item -> Flux.just(item)
                 .zipWith(item.getAssigneeId() != null ? personRepository.findById(item.getAssigneeId()) : Mono.empty())
                 .map(result -> result.getT1().setAssignee(result.getT2()))
-
                 .zipWith(itemTagRepository.findAllByItemId(item.getId())
                         .flatMap(link -> tagRepository.findById(link.getTagId()))
                         .collectList())

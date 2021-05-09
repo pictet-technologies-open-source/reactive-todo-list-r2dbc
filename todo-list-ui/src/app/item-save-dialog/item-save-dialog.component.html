@@ -8,7 +8,7 @@
       <mat-label>Assignee</mat-label>
       <mat-select [(value)]="itemToBeSaved.assignee">
         <mat-option>Unassigned</mat-option>
-        <mat-option *ngFor="let person of people" value="people">{{person.firstName + ' ' + person.lastName}}</mat-option>
+        <mat-option *ngFor="let person of people" value="person">{{person.firstName + ' ' + person.lastName}}</mat-option>
       </mat-select>
     </mat-form-field>
 
