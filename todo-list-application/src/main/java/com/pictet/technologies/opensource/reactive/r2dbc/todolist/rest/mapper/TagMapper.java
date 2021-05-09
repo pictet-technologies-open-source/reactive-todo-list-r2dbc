@@ -8,4 +8,7 @@ import org.mapstruct.Mapper;
 public interface TagMapper {
 
     TagResource toResource(Tag person);
+
+    Tag toModel(TagResource tagResource);
+
 }

@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Optional;
+import java.util.Set;
 
 @Data
 @Accessors(chain = true)
@@ -15,5 +16,7 @@ public class ItemPatchResource {
 
     private Optional<@NotBlank @Size(max=4000) String> description;
     private Optional<@NotNull ItemStatus> status;
+    private Optional<PersonResource> assignee;
+    private Optional<Set<TagResource>> tagResource;
 
 }

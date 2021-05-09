@@ -20,8 +20,9 @@ public class ItemService {
 
     private static final Sort DEFAULT_SORT = Sort.by(Sort.Order.by("lastModifiedDate"));
 
-    private final ItemRepository itemRepository;
     private final NotificationService notificationService;
+
+    private final ItemRepository itemRepository;
 
     @Transactional(readOnly = true)
     public Flux<Item> findAll() {

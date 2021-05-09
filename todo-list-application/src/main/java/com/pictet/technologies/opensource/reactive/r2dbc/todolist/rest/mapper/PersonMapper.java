@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 public interface PersonMapper {
 
     PersonResource toResource(Person person);
+
+    Person toModel(PersonResource personResource);
 }
