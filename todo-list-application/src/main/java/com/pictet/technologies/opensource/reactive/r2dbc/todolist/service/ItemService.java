@@ -116,9 +116,11 @@ public class ItemService {
                          return item;
                      }
                 )
-                .zipWith(itemTagRepository.findAllByItemId(item.getId())
-                        .flatMap(link -> tagRepository.findById(link.getTagId()))
-                        .collectList())
+//                .zipWith(itemTagRepository.findAllByItemId(item.getId())
+//                        .flatMap(link -> tagRepository.findById(link.getTagId()))
+//                        .collectList())
+//                .map(result -> result.getT1().setTags(result.getT2()))
+                .zipWith(tagRepository.findTagsByItemId(item.getId()).collectList())
                 .map(result -> result.getT1().setTags(result.getT2()))
         );
 
