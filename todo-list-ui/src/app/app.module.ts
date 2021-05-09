@@ -19,10 +19,10 @@ import {ItemSaveDialogComponent} from './item-save-dialog/item-save-dialog.compo
 import {HttpErrorsInterceptor} from './interceptor/http-errors-interceptor';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MomentHumanizePipe} from './pipe/moment-humanize.pipe';
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatSelectModule} from "@angular/material/select";
-import {MatChipsModule} from "@angular/material/chips";
-import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [

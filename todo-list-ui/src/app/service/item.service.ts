@@ -4,9 +4,9 @@ import {Item} from '../model/item';
 import {Observable} from 'rxjs';
 import {ItemStatus} from '../model/item-status.enum';
 import {environment} from '../../environments/environment';
-import {AbstractReactiveService} from "./abstract-reactive.service";
-import {Person} from "../model/person";
-import {Tag} from "../model/tag";
+import {AbstractReactiveService} from './abstract-reactive.service';
+import {Person} from '../model/person';
+import {Tag} from '../model/tag';
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +38,9 @@ export class ItemService extends AbstractReactiveService<Item> {
     return this.http.delete<void>(`${this.baseUri}/${id}`, ItemService.buildOptions(version));
   }
 
-  updateDescription(id: number, version: number, description: string): Observable<any> {
-    return this.http.patch<void>(`${this.baseUri}/${id}`, {description}, ItemService.buildOptions(version));
+  update(id: number, version: number, description: string, assignee: Person, tags: Tag[]): Observable<any> {
+    return this.http.patch<void>(`${this.baseUri}/${id}`,
+      {description, assignee, tags}, ItemService.buildOptions(version));
   }
 
   updateStatus(id: number, version: number, status: ItemStatus): Observable<any> {

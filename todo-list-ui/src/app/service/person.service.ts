@@ -1,8 +1,8 @@
 import {Injectable, NgZone} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {AbstractReactiveService} from "./abstract-reactive.service";
-import {Person} from "../model/person";
+import {AbstractReactiveService} from './abstract-reactive.service';
+import {Person} from '../model/person';
 
 @Injectable({
   providedIn: 'root'

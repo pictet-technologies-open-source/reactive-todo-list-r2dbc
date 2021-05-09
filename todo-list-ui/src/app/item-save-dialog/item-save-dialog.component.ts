@@ -1,10 +1,10 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Item} from '../model/item';
-import {PersonService} from "../service/person.service";
-import {TagService} from "../service/tag.service";
-import {Person} from "../model/person";
-import {Tag} from "../model/tag";
+import {PersonService} from '../service/person.service';
+import {TagService} from '../service/tag.service';
+import {Person} from '../model/person';
+import {Tag} from '../model/tag';
 
 @Component({
   selector: 'app-item-edit',
@@ -54,7 +54,7 @@ export class ItemSaveDialogComponent implements OnInit {
   }
 
   onOk() {
-    this.dialogRef.close(this.item);
+    this.dialogRef.close(this.itemToBeSaved);
   }
 
   toggleTagSelected(tag: Tag) {
@@ -65,7 +65,6 @@ export class ItemSaveDialogComponent implements OnInit {
       this.itemToBeSaved.tags.push(tag);
     }
   }
-
 
   isTagSelected(tag: Tag): boolean {
     return this.getTagIndex(tag) >= 0;
