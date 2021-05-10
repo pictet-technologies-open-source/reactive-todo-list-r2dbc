@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {ItemService} from '../service/item.service';
-import {finalize, take} from 'rxjs/operators';
+import {finalize} from 'rxjs/operators';
 import {ItemStatus} from '../model/item-status.enum';
 import {MatDialog} from '@angular/material/dialog';
 import {CdkDragDrop, transferArrayItem} from '@angular/cdk/drag-drop';
@@ -80,9 +80,9 @@ export class ItemBoardComponent implements OnInit, OnDestroy {
       disableClose: true
     });
 
-    dialogRef.afterClosed().pipe(take(1)).subscribe((response) => {
+    dialogRef.afterClosed().subscribe((response) => {
       if (response) {
-        this.itemService.addItem(response.description, response.assignee, response.tags)
+        this.itemService.addItem(response.description, response.assigneeId, response.tagIds)
           .pipe(finalize(() => { this.stopActionInProgress(); }))
           .subscribe();
       } else {

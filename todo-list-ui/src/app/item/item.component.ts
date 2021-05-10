@@ -47,7 +47,7 @@ export class ItemComponent {
 
     dialogRef.afterClosed().subscribe((response) => {
       if (response) {
-        this.itemService.update(this.item.id, this.item.version, response.description, response.assignee, response.tags)
+        this.itemService.update(this.item.id, this.item.version, response.description, response.assigneeId, response.tagIds)
           .pipe(finalize(() => this.actionInProgress = false))
           .subscribe(() => {
             this.itemUpdated.emit();

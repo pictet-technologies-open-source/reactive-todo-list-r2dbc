@@ -4,10 +4,10 @@ import {Person} from './person';
 import {Tag} from './tag';
 
 export interface Item {
-  id?: number;
-  version?: number;
+  id: number;
+  version: number;
   description?: string;
-  status?: ItemStatus;
+  status: ItemStatus;
   assignee?: Person;
   tags?: Tag[];
 

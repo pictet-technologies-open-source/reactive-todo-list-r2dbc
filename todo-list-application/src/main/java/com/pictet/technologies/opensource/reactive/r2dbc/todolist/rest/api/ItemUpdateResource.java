@@ -20,7 +20,7 @@ public class ItemUpdateResource {
     @NotNull
     private ItemStatus status;
 
-    private PersonResource assignee;
+    private Long assigneeId;
 
-    private Set<TagResource> tags;
+    private Set<Long> tagId;
 }

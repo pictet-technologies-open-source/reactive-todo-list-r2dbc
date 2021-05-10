@@ -15,8 +15,8 @@ public class NewItemResource {
     @Size(max=4000)
     private String description;
 
-    private PersonResource assignee;
+    private Long assigneeId;
 
-    private Set<TagResource> tags;
+    private Set<Long> tagIds;
 
 }

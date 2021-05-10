@@ -5,6 +5,7 @@ import {PersonService} from '../service/person.service';
 import {TagService} from '../service/tag.service';
 import {Person} from '../model/person';
 import {Tag} from '../model/tag';
+import {SaveItem} from "../model/save-item";
 
 @Component({
   selector: 'app-item-edit',
@@ -16,7 +17,7 @@ export class ItemSaveDialogComponent implements OnInit {
   people: Person[] = [];
   tags: Tag[] = [];
 
-  itemToBeSaved: Item;
+  itemToBeSaved: SaveItem;
 
   constructor(private readonly dialogRef: MatDialogRef<ItemSaveDialogComponent>,
               @Inject(MAT_DIALOG_DATA) readonly item: Item,
@@ -29,12 +30,12 @@ export class ItemSaveDialogComponent implements OnInit {
     this.itemToBeSaved = this.item ? {
       id: this.item.id,
       description: this.item.description,
-      assignee: this.item.assignee,
-      tags: this.item.tags ? this.item.tags : []
-    } : { tags: []};
+      assigneeId: this.item.assignee ? this.item.assignee.id : null,
+      tagIds: this.item.tags ? this.item.tags.map(t => t.id) : []
+    } : { tagIds: []};
 
-    if(!this.itemToBeSaved.tags) {
-      this.itemToBeSaved.tags = [];
+    if(!this.itemToBeSaved.tagIds) {
+      this.itemToBeSaved.tagIds = [];
     }
 
     this.personService.findAll().subscribe(person => {
@@ -58,9 +59,9 @@ export class ItemSaveDialogComponent implements OnInit {
   toggleTagSelected(tag: Tag) {
     const index = this.getTagIndex(tag);
     if (index >= 0) {
-      this.itemToBeSaved.tags.splice(index, 1);
+      this.itemToBeSaved.tagIds.splice(index, 1);
     } else {
-      this.itemToBeSaved.tags.push(tag);
+      this.itemToBeSaved.tagIds.push(tag.id);
     }
   }
 
@@ -69,8 +70,8 @@ export class ItemSaveDialogComponent implements OnInit {
   }
 
   private getTagIndex(tag: Tag): number {
-    return (this.itemToBeSaved && this.itemToBeSaved.tags)
-     ? this.itemToBeSaved.tags.map(t => t.id).indexOf(tag.id) : -1;
+    return (this.itemToBeSaved && this.itemToBeSaved.tagIds)
+     ? this.itemToBeSaved.tagIds.indexOf(tag.id) : -1;
   }
 
 }

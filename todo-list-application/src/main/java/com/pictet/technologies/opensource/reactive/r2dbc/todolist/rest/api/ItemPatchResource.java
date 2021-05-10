@@ -16,7 +16,7 @@ public class ItemPatchResource {
 
     private Optional<@NotBlank @Size(max=4000) String> description;
     private Optional<@NotNull ItemStatus> status;
-    private Optional<PersonResource> assignee;
-    private Optional<Set<TagResource>> tagResource;
+    private Optional<Long> assigneeId;
+    private Optional<Set<Long>> tagIds;
 
 }

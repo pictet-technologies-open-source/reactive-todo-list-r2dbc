@@ -38,9 +38,9 @@ export class ItemService extends AbstractReactiveService<Item> {
     return this.http.delete<void>(`${this.baseUri}/${id}`, ItemService.buildOptions(version));
   }
 
-  update(id: number, version: number, description: string, assignee: Person, tags: Tag[]): Observable<any> {
+  update(id: number, version: number, description: string, assigneeId: number, tagIds: number[]): Observable<any> {
     return this.http.patch<void>(`${this.baseUri}/${id}`,
-      {description, assignee, tags}, ItemService.buildOptions(version));
+      {description, assigneeId, tagIds}, ItemService.buildOptions(version));
   }
 
   updateStatus(id: number, version: number, status: ItemStatus): Observable<any> {
