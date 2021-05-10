@@ -6,9 +6,9 @@
 
     <mat-form-field style="padding-top: 10px;">
       <mat-label>Assignee</mat-label>
-      <mat-select [(value)]="itemToBeSaved.assigneeId">
-        <mat-option>Unassigned</mat-option>
-        <mat-option *ngFor="let person of people" value="{{person.id}}">{{person.firstName + ' ' + person.lastName}}</mat-option>
+      <mat-select [(ngModel)]="itemToBeSaved.assigneeId">
+        <mat-option [value]="null">Unassigned</mat-option>
+        <mat-option *ngFor="let person of people" [value]="person.id">{{person.firstName + ' ' + person.lastName}}</mat-option>
       </mat-select>
     </mat-form-field>
 
