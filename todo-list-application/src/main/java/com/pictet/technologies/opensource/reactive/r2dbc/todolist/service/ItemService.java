@@ -45,10 +45,8 @@ public class ItemService {
     @Transactional
     public Mono<Item> save(final Item item) {
 
-        // Todo add boolean retrieve elements
-
-        // Build the item tags to be saved
-
+        // TODO add boolean retrieve elements
+        // FIXME Unassign
 
         if (item.getId() != null) {
             // Update
