@@ -124,8 +124,8 @@ public class ItemService {
         return Mono.just(item)
                 .zipWith(item.getAssigneeId() != null
                         ? personRepository.findById(item.getAssigneeId())
-                        .map(Optional::of)
-                        .switchIfEmpty(Mono.just(Optional.empty()))
+                               .map(Optional::of)
+                               .switchIfEmpty(Mono.just(Optional.empty()))
                         : Mono.just(Optional.empty()))
                 .map(result -> item.setAssignee(((Optional<Person>) result.getT2()).orElse(null)))
                 .zipWith(tagRepository.findTagsByItemId(item.getId()).collectList())
