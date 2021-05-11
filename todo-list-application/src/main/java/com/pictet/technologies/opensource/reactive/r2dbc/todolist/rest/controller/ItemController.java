@@ -56,7 +56,7 @@ public class ItemController {
 
 
         // Find the item and update the instance
-        return itemService.findById(id, version).map(item -> {
+        return itemService.findById(id, version, false).map(item -> {
             itemMapper.update(itemUpdateResource, item);
             return item;
         }).flatMap(itemService::save)
@@ -70,7 +70,7 @@ public class ItemController {
                                             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Long version,
                                             @Valid @RequestBody final ItemPatchResource patch) {
 
-        return itemService.findById(id, version).map(item -> {
+        return itemService.findById(id, version, true).map(item -> {
             if (patch.getDescription() != null) {
                 // The description has been provided in the patch
                 item.setDescription(patch.getDescription().get());
@@ -89,7 +89,7 @@ public class ItemController {
     @GetMapping(value = "/{id}", produces = {APPLICATION_JSON_VALUE})
     public Mono<ItemResource> findById(@PathVariable final Long id) {
 
-        return itemService.findById(id, null).map(itemMapper::toResource);
+        return itemService.findById(id, null, true).map(itemMapper::toResource);
     }
 
     @ApiOperation("Get a the list of items")

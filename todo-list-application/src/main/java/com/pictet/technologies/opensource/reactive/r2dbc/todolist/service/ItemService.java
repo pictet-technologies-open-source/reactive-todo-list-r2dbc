@@ -33,7 +33,7 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public Flux<Item> findAll() {
-        return loadRelationships(itemRepository.findAll(DEFAULT_SORT));
+        return loadRelations(itemRepository.findAll(DEFAULT_SORT));
     }
 
     @Transactional
@@ -49,7 +49,7 @@ public class ItemService {
     @Transactional
     public Mono<Void> deleteById(final Long id, final Long version) {
 
-        return findById(id, version).flatMap(itemRepository::delete);
+        return findById(id, version, false).flatMap(itemRepository::delete);
     }
 
     /**
@@ -57,13 +57,15 @@ public class ItemService {
      *
      * @param id      identifier of the item
      * @param version expected version to be retrieved
+     * @param loadRelations true if the related objects must also be retrieved
+     *
      * @return the item
      * ^
      */
     @Transactional(readOnly = true)
-    public Mono<Item> findById(final Long id, final Long version) {
+    public Mono<Item> findById(final Long id, final Long version, final boolean loadRelations) {
 
-        return itemRepository.findById(id)
+        final Mono<Item> itemMono = itemRepository.findById(id)
                 .switchIfEmpty(Mono.error(new ItemNotFoundException(id)))
                 .handle((item, sink) -> {
                     if (version != null && !version.equals(item.getVersion())) {
@@ -72,8 +74,9 @@ public class ItemService {
                         sink.next(item);
                     }
                 });
-    }
 
+        return loadRelations ? itemMono.flatMap(this::loadRelations) : itemMono;
+    }
 
     /**
      * Listen to all saved items
@@ -82,7 +85,7 @@ public class ItemService {
      */
     public Flux<Item> listenToSavedItems() {
 
-        return loadRelationships(this.notificationService.listen(ITEM_SAVED, Item.class));
+        return loadRelations(this.notificationService.listen(ITEM_SAVED, Item.class));
     }
 
     /**
@@ -96,34 +99,29 @@ public class ItemService {
                 .map(Item::getId);
     }
 
-    private Flux<Item> loadRelationships(Flux<Item> items) {
+    private Flux<Item> loadRelations(Flux<Item> items) {
 
-        // TODO check ZipWithIterable ?
-        // TODO ORDER Tags
-        return items.flatMap(item -> Flux.just(item)
-                .zipWith(item.getAssigneeId() != null
-                        ? personRepository.findById(item.getAssigneeId())
-                        : Mono.just(new Person()))
+        return items.flatMap(this::loadRelations);
+    }
+
+    private Mono<Item> loadRelations(Item item) {
+       return Mono.just(item).zipWith(item.getAssigneeId() != null
+                ? personRepository.findById(item.getAssigneeId())
+                : Mono.just(new Person()))
                 .map(result -> {
-                         final Person assignee = result.getT2();
+                            final Person assignee = result.getT2();
 
-                         if (assignee.getId() != null) {
-                             item.setAssignee(assignee);
-                         } else {
-                             item.setAssignee(null);
-                         }
+                            if (assignee.getId() != null) {
+                                item.setAssignee(assignee);
+                            } else {
+                                item.setAssignee(null);
+                            }
 
-                         return item;
-                     }
+                            return item;
+                        }
                 )
-//                .zipWith(itemTagRepository.findAllByItemId(item.getId())
-//                        .flatMap(link -> tagRepository.findById(link.getTagId()))
-//                        .collectList())
-//                .map(result -> result.getT1().setTags(result.getT2()))
                 .zipWith(tagRepository.findTagsByItemId(item.getId()).collectList())
-                .map(result -> result.getT1().setTags(result.getT2()))
-        );
-
+                .map(result -> result.getT1().setTags(result.getT2()));
     }
 
     private Mono<Boolean> verifyExistence(final Long id) {
