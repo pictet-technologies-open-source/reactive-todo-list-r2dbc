@@ -121,6 +121,9 @@ public class ItemService {
     }
 
     private Mono<Item> loadRelations(Item item) {
+
+        // TODO remove optional
+
         return Mono.just(item)
                 .zipWith(item.getAssigneeId() != null
                         ? personRepository.findById(item.getAssigneeId())
