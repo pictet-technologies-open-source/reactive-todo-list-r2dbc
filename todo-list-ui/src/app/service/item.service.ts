@@ -5,8 +5,6 @@ import {Observable} from 'rxjs';
 import {ItemStatus} from '../model/item-status.enum';
 import {environment} from '../../environments/environment';
 import {AbstractReactiveService} from './abstract-reactive.service';
-import {Person} from '../model/person';
-import {Tag} from '../model/tag';
 
 @Injectable({
   providedIn: 'root'
@@ -25,9 +23,9 @@ export class ItemService extends AbstractReactiveService<Item> {
     };
   }
 
-  addItem(description: string, assignee: Person, tags: Tag[]): Observable<any> {
+  addItem(description: string, assigneeId: number, tagIds = [] as number[]): Observable<any> {
     return this.http.post<Item>(this.baseUri, {
-      description, assignee, tags: tags ? tags : [] });
+      description, assigneeId, tagIds});
   }
 
   findById(id: number): Observable<Item> {

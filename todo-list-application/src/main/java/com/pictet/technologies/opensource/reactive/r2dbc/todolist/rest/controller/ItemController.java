@@ -80,6 +80,11 @@ public class ItemController {
                 // The status has been provided in the patch
                 item.setStatus(patch.getStatus().get());
             }
+
+            if(patch.getAssigneeId() != null) {
+                item.setAssigneeId(patch.getAssigneeId().get());
+            }
+
             return item;
         }).flatMap(itemService::save)
                 .map(item -> noContent().build());
