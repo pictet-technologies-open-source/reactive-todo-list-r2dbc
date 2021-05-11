@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_DELETED;
 import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_SAVED;
 
@@ -33,7 +35,8 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public Flux<Item> findAll() {
-        return loadRelations(itemRepository.findAll(DEFAULT_SORT));
+        return itemRepository.findAll(DEFAULT_SORT)
+                .flatMap(this::loadRelations);
     }
 
     @Transactional
@@ -85,7 +88,8 @@ public class ItemService {
      */
     public Flux<Item> listenToSavedItems() {
 
-        return loadRelations(this.notificationService.listen(ITEM_SAVED, Item.class));
+        return this.notificationService.listen(ITEM_SAVED, Item.class)
+                .flatMap(this::loadRelations);
     }
 
     /**
@@ -99,27 +103,14 @@ public class ItemService {
                 .map(Item::getId);
     }
 
-    private Flux<Item> loadRelations(Flux<Item> items) {
-
-        return items.flatMap(this::loadRelations);
-    }
-
     private Mono<Item> loadRelations(Item item) {
-       return Mono.just(item).zipWith(item.getAssigneeId() != null
+       return Mono.just(item)
+               .zipWith(item.getAssigneeId() != null
                 ? personRepository.findById(item.getAssigneeId())
-                : Mono.just(new Person()))
-                .map(result -> {
-                            final Person assignee = result.getT2();
-
-                            if (assignee.getId() != null) {
-                                item.setAssignee(assignee);
-                            } else {
-                                item.setAssignee(null);
-                            }
-
-                            return item;
-                        }
-                )
+                       .map(Optional::of)
+                       .switchIfEmpty(Mono.just(Optional.empty()))
+                : Mono.just(Optional.empty()))
+                .map(result -> item.setAssignee(((Optional<Person>) result.getT2()).orElse(null)))
                 .zipWith(tagRepository.findTagsByItemId(item.getId()).collectList())
                 .map(result -> result.getT1().setTags(result.getT2()));
     }
