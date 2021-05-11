@@ -18,8 +18,8 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 public class ItemTag {
 
-    @Id
-    private Long id;
+   @Id
+   private Long id;
 
    @NotNull
    private Long itemId;

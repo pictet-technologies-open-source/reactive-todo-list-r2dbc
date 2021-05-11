@@ -9,6 +9,7 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.ItemDeleted;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.ItemSaved;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper.ItemMapper;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper.TagMapper;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.ItemService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class ItemController {
 
     private final ItemService itemService;
     private final ItemMapper itemMapper;
+    private final TagMapper tagMapper;
 
     @ApiOperation("Create a new item")
     @PostMapping
@@ -83,6 +85,12 @@ public class ItemController {
 
             if(patch.getAssigneeId() != null) {
                 item.setAssigneeId(patch.getAssigneeId().get());
+            }
+
+            if(patch.getTagIds() != null) {
+
+                // Set tags objects containing only the ID
+                item.setTags(tagMapper.toTags(patch.getTagIds().orElse(null)));
             }
 
             return item;

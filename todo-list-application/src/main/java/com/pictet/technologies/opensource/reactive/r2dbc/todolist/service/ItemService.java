@@ -3,6 +3,7 @@ package com.pictet.technologies.opensource.reactive.r2dbc.todolist.service;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.ItemNotFoundException;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.UnexpectedItemVersionException;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.ItemTag;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Person;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemRepository;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemTagRepository;
@@ -14,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_DELETED;
 import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_SAVED;
@@ -41,16 +44,33 @@ public class ItemService {
 
     @Transactional
     public Mono<Item> save(final Item item) {
+
+        // Todo add boolean retrieve elements
+
+        // Build the item tags to be saved
+
+
         if (item.getId() != null) {
             // Update
             return verifyExistence(item.getId())
                     .flatMap(exists -> itemRepository.save(item));
+
+            // TODO update tags
+
         }
-        return itemRepository.save(item);
+
+        return itemRepository.save(item)
+                .flatMap(savedItem -> Mono.just(savedItem)
+                        .zipWith(itemTagRepository.saveAll(savedItem.getTags().stream()
+                                .map(tag -> new ItemTag().setItemId(savedItem.getId()).setTagId(tag.getId()))
+                                .collect(Collectors.toSet())).collectList())
+                        .map(Tuple2::getT1));
     }
 
     @Transactional
     public Mono<Void> deleteById(final Long id, final Long version) {
+
+        // FIXME delete relationships
 
         return findById(id, version, false).flatMap(itemRepository::delete);
     }
@@ -58,10 +78,9 @@ public class ItemService {
     /**
      * Find an item
      *
-     * @param id      identifier of the item
-     * @param version expected version to be retrieved
+     * @param id            identifier of the item
+     * @param version       expected version to be retrieved
      * @param loadRelations true if the related objects must also be retrieved
-     *
      * @return the item
      * ^
      */
@@ -104,12 +123,12 @@ public class ItemService {
     }
 
     private Mono<Item> loadRelations(Item item) {
-       return Mono.just(item)
-               .zipWith(item.getAssigneeId() != null
-                ? personRepository.findById(item.getAssigneeId())
-                       .map(Optional::of)
-                       .switchIfEmpty(Mono.just(Optional.empty()))
-                : Mono.just(Optional.empty()))
+        return Mono.just(item)
+                .zipWith(item.getAssigneeId() != null
+                        ? personRepository.findById(item.getAssigneeId())
+                        .map(Optional::of)
+                        .switchIfEmpty(Mono.just(Optional.empty()))
+                        : Mono.just(Optional.empty()))
                 .map(result -> item.setAssignee(((Optional<Person>) result.getT2()).orElse(null)))
                 .zipWith(tagRepository.findTagsByItemId(item.getId()).collectList())
                 .map(result -> result.getT1().setTags(result.getT2()));

@@ -4,14 +4,19 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemUpdateResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.NewItemResource;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring", uses = {PersonMapper.class, TagMapper.class})
-public interface ItemMapper {
+public abstract class ItemMapper {
 
-    ItemResource toResource(Item item);
+    @Autowired
+    private TagMapper tagMapper;
+
+    public abstract ItemResource toResource(Item item);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
@@ -19,13 +24,20 @@ public interface ItemMapper {
     @Mapping(target = "lastModifiedDate", ignore = true)
     @Mapping(target = "version", ignore = true)
     @Mapping(target = "assignee", ignore = true)
-    Item toModel(NewItemResource item);
+    @Mapping(target = "tags", ignore = true)
+    public abstract Item toModel(NewItemResource itemResource);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     @Mapping(target = "version", ignore = true)
     @Mapping(target = "assignee", ignore = true)
-    void update(ItemUpdateResource updateResource, @MappingTarget Item item);
+    @Mapping(target = "tags", ignore = true)
+    public abstract void update(ItemUpdateResource itemResource, @MappingTarget Item item);
+
+    @AfterMapping
+    public void afterMapping(NewItemResource itemResource, @MappingTarget Item item) {
+        item.setTags(tagMapper.toTags(itemResource.getTagIds()));
+    }
 
 }
