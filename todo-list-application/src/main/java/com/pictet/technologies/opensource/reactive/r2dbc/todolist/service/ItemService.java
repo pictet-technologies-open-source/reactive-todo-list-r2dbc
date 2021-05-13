@@ -4,7 +4,6 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.Item
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.UnexpectedItemVersionException;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.ItemTag;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Person;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemRepository;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemTagRepository;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.PersonRepository;
@@ -17,7 +16,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_DELETED;
@@ -68,9 +66,13 @@ public class ItemService {
     @Transactional
     public Mono<Void> deleteById(final Long id, final Long version) {
 
-        // FIXME delete relationships
+        // TODO
 
-        return findById(id, version, false).flatMap(itemRepository::delete);
+        return findById(id, version, false)
+//                .flatMap(item -> Mono.just(item).zipWith(itemTagRepository.deleteAllByItemId(id))
+//                                .map(Tuple2::getT1))
+                .flatMap(itemRepository::delete);
+
     }
 
     /**
@@ -120,16 +122,20 @@ public class ItemService {
                 .map(Item::getId);
     }
 
-    private Mono<Item> loadRelations(Item item) {
-        return Mono.just(item)
-                .zipWith(item.getAssigneeId() != null
-                        ? personRepository.findById(item.getAssigneeId())
-                        .map(Optional::of)
-                        .switchIfEmpty(Mono.just(Optional.empty()))
-                        : Mono.just(Optional.empty()))
-                .map(result -> item.setAssignee(((Optional<Person>) result.getT2()).orElse(null)))
+    private Mono<Item> loadRelations(final Item item) {
+
+        // Load the tags
+        Mono<Item> mono = Mono.just(item)
                 .zipWith(tagRepository.findTagsByItemId(item.getId()).collectList())
                 .map(result -> result.getT1().setTags(result.getT2()));
+
+        // Load the assignee (if set)
+        if(item.getAssigneeId() != null) {
+            mono = mono.zipWith(personRepository.findById(item.getAssigneeId()))
+                    .map(result -> result.getT1().setAssignee(result.getT2()));
+        }
+
+        return mono;
     }
 
     private Mono<Boolean> verifyExistence(final Long id) {
