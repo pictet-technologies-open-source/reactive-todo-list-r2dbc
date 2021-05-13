@@ -40,4 +40,8 @@ public abstract class ItemMapper {
         item.setTags(tagMapper.toTags(itemResource.getTagIds()));
     }
 
+    @AfterMapping
+    public void afterMapping(ItemUpdateResource itemResource, @MappingTarget Item item) {
+        item.setTags(tagMapper.toTags(itemResource.getTagIds()));
+    }
 }

@@ -5,8 +5,8 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.TagRe
 import org.mapstruct.Mapper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -14,8 +14,7 @@ public interface TagMapper {
 
     TagResource toResource(Tag person);
 
-
-    default List<Tag> toTags(Set<Long> tagsId) {
+    default List<Tag> toTags(Collection<Long> tagsId) {
 
         if(tagsId == null) {
             return new ArrayList<>();

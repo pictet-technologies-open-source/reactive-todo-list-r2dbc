@@ -22,5 +22,5 @@ public class ItemUpdateResource {
 
     private Long assigneeId;
 
-    private Set<Long> tagId;
+    private Set<Long> tagIds;
 }

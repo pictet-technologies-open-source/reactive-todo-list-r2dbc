@@ -72,7 +72,7 @@ public class ItemController {
                                             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Long version,
                                             @Valid @RequestBody final ItemPatchResource patch) {
 
-        return itemService.findById(id, version, true).map(item -> {
+        return itemService.findById(id, version, false).map(item -> {
             if (patch.getDescription() != null) {
                 // The description has been provided in the patch
                 item.setDescription(patch.getDescription().get());
