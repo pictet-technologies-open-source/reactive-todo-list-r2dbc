@@ -66,13 +66,10 @@ public class ItemService {
     @Transactional
     public Mono<Void> deleteById(final Long id, final Long version) {
 
-        // TODO
-
         return findById(id, version, false)
-//                .flatMap(item -> Mono.just(item).zipWith(itemTagRepository.deleteAllByItemId(id))
-//                                .map(Tuple2::getT1))
+                .zipWith( itemTagRepository.deleteAllByItemId(id))
+                .map(Tuple2::getT1)
                 .flatMap(itemRepository::delete);
-
     }
 
     /**
@@ -99,6 +96,7 @@ public class ItemService {
                 });
 
         return loadRelations ? itemMono.flatMap(this::loadRelations) : itemMono;
+
     }
 
     /**
@@ -131,7 +129,7 @@ public class ItemService {
                 .map(result -> result.getT1().setTags(result.getT2()));
 
         // Load the assignee (if set)
-        if(item.getAssigneeId() != null) {
+        if (item.getAssigneeId() != null) {
             mono = mono.zipWith(personRepository.findById(item.getAssigneeId()))
                     .map(result -> result.getT1().setAssignee(result.getT2()));
         }
