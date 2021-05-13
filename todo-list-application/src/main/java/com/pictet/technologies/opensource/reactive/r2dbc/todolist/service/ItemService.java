@@ -147,12 +147,13 @@ public class ItemService {
     private Mono<Item> create(Item item) {
         return itemRepository.save(item)
                 .flatMap(savedItem ->
-                        Mono.just(savedItem)
-                                .zipWith(itemTagRepository.saveAll(
-                                        savedItem.getTags().stream()
-                                                .map(tag -> new ItemTag().setItemId(savedItem.getId()).setTagId(tag.getId()))
-                                                .collect(Collectors.toSet())).collectList())
-                                .map(Tuple2::getT1));
+                     Mono.just(savedItem)
+                     // Save the tag relations
+                     .zipWith(itemTagRepository.saveAll(
+                                  savedItem.getTags().stream()
+                                     .map(tag -> new ItemTag().setItemId(savedItem.getId()).setTagId(tag.getId()))
+                                     .collect(Collectors.toSet())).collectList())
+                     .map(Tuple2::getT1));
     }
 
     private Mono<Item> loadRelations(final Item item) {
