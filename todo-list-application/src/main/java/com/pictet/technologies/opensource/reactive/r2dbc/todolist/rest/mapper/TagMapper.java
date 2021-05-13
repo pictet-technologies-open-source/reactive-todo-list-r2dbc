@@ -21,7 +21,7 @@ public interface TagMapper {
             return new ArrayList<>();
         }
 
-        // Set tags objects containing only the ID
+        // Build tags containing only the ID
         return tagsId.stream()
                 .map(tagId -> new Tag().setId(tagId))
                 .collect(Collectors.toList());

@@ -90,6 +90,7 @@ public class ItemService {
         final Mono<Item> itemMono = itemRepository.findById(id)
                 .switchIfEmpty(Mono.error(new ItemNotFoundException(id)))
                 .handle((item, sink) -> {
+                    // Optimistic locking: pre-check
                     if (version != null && !version.equals(item.getVersion())) {
                         sink.error(new UnexpectedItemVersionException(version, item.getVersion()));
                     } else {
