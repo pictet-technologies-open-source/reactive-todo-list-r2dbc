@@ -47,14 +47,10 @@ public class ItemService {
     public Mono<Item> save(final Item itemToSave) {
 
         // TODO add boolean retrieve elements
-        // FIXME Unassign
 
-        if (itemToSave.getId() != null) {
-            // Update
-            return update(itemToSave);
-        }
-
-        return create(itemToSave);
+        return itemToSave.getId() != null 
+               ? update(itemToSave)
+               : create(itemToSave);
     }
 
     @Transactional
