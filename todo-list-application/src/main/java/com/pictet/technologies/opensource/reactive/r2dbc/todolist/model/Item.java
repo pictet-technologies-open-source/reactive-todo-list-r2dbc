@@ -1,9 +1,6 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.*;
 import org.springframework.data.relational.core.mapping.Table;
@@ -20,7 +17,13 @@ import java.util.List;
 @Setter
 @ToString
 @Accessors(chain = true)
+@NoArgsConstructor
 public class Item {
+
+    public Item(Long id, Long version) {
+        this.id = id;
+        this.version = version;
+    }
 
     @Id
     private Long id;

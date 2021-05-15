@@ -1,11 +1,13 @@
-package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper;
+package com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper;
 
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.ItemTag;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Tag;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.TagResource;
 import org.mapstruct.Mapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,24 @@ public interface TagMapper {
         return tagsId.stream()
                 .map(tagId -> new Tag().setId(tagId))
                 .collect(Collectors.toList());
+    }
+
+    default Collection<Long> toTagIds(Collection<Tag> tags) {
+        if(tags == null) {
+            return new LinkedHashSet<>();
+        }
+
+        return tags.stream().map(Tag::getId).collect(Collectors.toSet());
+    }
+
+    default Collection<ItemTag> toItemTags(Long itemId, Collection<Tag> tags) {
+        if(tags == null) {
+            return new LinkedHashSet<>();
+        }
+
+        return tags.stream()
+                .map(tag -> new ItemTag(itemId, tag.getId()))
+                .collect(Collectors.toSet());
     }
 
 }

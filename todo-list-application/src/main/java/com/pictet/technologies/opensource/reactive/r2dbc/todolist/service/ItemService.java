@@ -2,9 +2,9 @@ package com.pictet.technologies.opensource.reactive.r2dbc.todolist.service;
 
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.ItemNotFoundException;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.exception.UnexpectedItemVersionException;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper.TagMapper;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Item;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.ItemTag;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.Tag;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemRepository;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.ItemTagRepository;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.PersonRepository;
@@ -17,8 +17,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_DELETED;
@@ -36,6 +36,7 @@ public class ItemService {
     private final PersonRepository personRepository;
     private final ItemTagRepository itemTagRepository;
     private final TagRepository tagRepository;
+    private final TagMapper tagMapper;
 
     @Transactional(readOnly = true)
     public Flux<Item> findAll() {
@@ -44,21 +45,71 @@ public class ItemService {
     }
 
     @Transactional
-    public Mono<Item> save(final Item itemToSave) {
+    public Mono<Long> create(Item item) {
 
-        // TODO add boolean retrieve elements
+        if(item.getId() != null || item.getVersion() != null) {
+            throw new IllegalArgumentException("When creating an item, the id and the version must be null");
+        }
 
-        return itemToSave.getId() != null 
-               ? update(itemToSave)
-               : create(itemToSave);
+        return  // Save the new item
+                itemRepository.save(item)
+                // Save the links to the tags
+                .flatMap(savedItem ->
+                     itemTagRepository.saveAll(tagMapper.toItemTags(savedItem.getId(), savedItem.getTags()))
+                         .collectList()
+                         // Return the ID of the newly created item
+                         .then(Mono.just(savedItem.getId())));
+    }
+
+    @Transactional
+    public Mono<Long> update(Item itemToSave) {
+
+        if(itemToSave.getId() == null || itemToSave.getVersion() == null) {
+            throw new IllegalArgumentException("When updating an item, the id and the version must be provided");
+        }
+
+        final Collection<Long> itemToSaveTagIds = tagMapper.toTagIds(itemToSave.getTags());
+
+        return  // Delete the links to the removed tags
+                this.itemTagRepository.deleteAllByItemIdAndTagIdNotIn(itemToSave.getId(), itemToSaveTagIds)
+
+                // Find the current item
+                .then(findById(itemToSave.getId(), itemToSave.getVersion(), true))
+
+                // Insert the links to the new added tags
+                .flatMap(currentItem -> {
+
+                    final Collection<Long> currentTagIds = tagMapper.toTagIds(currentItem.getTags());
+
+                    // Compute the list of new tag ids
+                    itemToSaveTagIds.removeAll(currentTagIds);
+
+                    // Create the links to the added tags
+                    final List<ItemTag> newItemTags = itemToSaveTagIds.stream()
+                            .map(tagId -> new ItemTag(itemToSave.getId(), tagId)).collect(Collectors.toList());
+
+                    return this.itemTagRepository.saveAll(newItemTags).collectList();
+
+                })
+
+                // Save the item
+                .flatMap(r -> itemRepository.save(itemToSave))
+                .map(Item::getId);
     }
 
     @Transactional
     public Mono<Void> deleteById(final Long id, final Long version) {
 
-        return findById(id, version, false)
+        return  // Find the item to delete
+                findById(id, version, false)
+
+                // Delete the links to the tags
                 .zipWith(itemTagRepository.deleteAllByItemId(id))
+
+                // Return the item
                 .map(Tuple2::getT1)
+
+                // Delete the item
                 .flatMap(itemRepository::delete);
     }
 
@@ -68,8 +119,9 @@ public class ItemService {
      * @param id            identifier of the item
      * @param version       expected version to be retrieved
      * @param loadRelations true if the related objects must also be retrieved
+     *
      * @return the item
-     * ^
+     *
      */
     @Transactional(readOnly = true)
     public Mono<Item> findById(final Long id, final Long version, final boolean loadRelations) {
@@ -110,52 +162,11 @@ public class ItemService {
                 .map(Item::getId);
     }
 
-    private Mono<Item> update(Item itemToSave) {
-
-        // FIXME simplfy it + avoid finding the item twice
-        // FIXME null author
-
-        return findById(itemToSave.getId(), null, true)
-                .flatMap(currentItem -> {
-                    // Remove the links to the removed tags
-
-                    final Set<Long> currentTagIds = currentItem.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
-                    final Set<Long> newTagIds = itemToSave.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
-
-                    currentTagIds.removeAll(newTagIds);
-
-                    return this.itemTagRepository.deleteAllByTagIdIn(currentTagIds)
-                            .map(nb -> currentItem);
-                })
-                .flatMap(currentItem -> {
-
-                    // Add the links to the added tags
-
-                    final Set<Long> currentTagIds = currentItem.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
-                    final Set<Long> newTagIds = itemToSave.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
-
-                    newTagIds.removeAll(currentTagIds);
-                    List<ItemTag> newItemTags = newTagIds.stream().map(tagId -> new ItemTag().setItemId(itemToSave.getId()).setTagId(tagId)).collect(Collectors.toList());
-
-                    return this.itemTagRepository.saveAll(newItemTags)
-                            .collectList();
-                })
-                // Save the item
-                .flatMap(r -> itemRepository.save(itemToSave));
-    }
-
-    private Mono<Item> create(Item item) {
-        return itemRepository.save(item)
-                .flatMap(savedItem ->
-                     Mono.just(savedItem)
-                     // Save the tag relations
-                     .zipWith(itemTagRepository.saveAll(
-                                  savedItem.getTags().stream()
-                                     .map(tag -> new ItemTag().setItemId(savedItem.getId()).setTagId(tag.getId()))
-                                     .collect(Collectors.toSet())).collectList())
-                     .map(Tuple2::getT1));
-    }
-
+    /**
+     * Load the objects related to an item
+     * @param item Item
+     * @return The items with the loaded related objects (assignee, tags)
+     */
     private Mono<Item> loadRelations(final Item item) {
 
         // Load the tags
@@ -171,14 +182,5 @@ public class ItemService {
 
         return mono;
     }
-
-
-//    default Collection<Long> toTagIds(Collection<Tag> tags) {
-//        if(tags == null) {
-//            return new HashSet<>();
-//        }
-//
-//        return tags.stream().map(Tag::getId).collect(Collectors.toSet());
-//    }
 
 }

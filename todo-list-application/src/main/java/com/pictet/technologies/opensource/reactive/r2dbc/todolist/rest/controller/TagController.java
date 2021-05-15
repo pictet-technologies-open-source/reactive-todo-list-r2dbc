@@ -1,8 +1,8 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.controller;
 
 
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper.TagMapper;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.TagResource;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper.TagMapper;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.TagService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

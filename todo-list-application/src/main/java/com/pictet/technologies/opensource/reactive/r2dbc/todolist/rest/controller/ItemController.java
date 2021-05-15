@@ -1,6 +1,8 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.controller;
 
 
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper.ItemMapper;
+import com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper.TagMapper;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemPatchResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemUpdateResource;
@@ -8,8 +10,6 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.NewIt
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.Event;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.ItemDeleted;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.event.ItemSaved;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper.ItemMapper;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.mapper.TagMapper;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.service.ItemService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -45,46 +45,45 @@ public class ItemController {
     @PostMapping
     public Mono<ResponseEntity<Void>> create(@Valid @RequestBody final NewItemResource newItemResource) {
 
-        return itemService.save(itemMapper.toModel(newItemResource))
-                .map(item -> created(linkTo(ItemController.class).slash(item.getId()).toUri()).build());
+        return itemService.create(itemMapper.toModel(newItemResource))
+                .map(itemId -> created(linkTo(ItemController.class).slash(itemId).toUri()).build());
 
     }
 
     @ApiOperation("Update an existing item")
     @PutMapping(value = "/{id}")
     public Mono<ResponseEntity<Void>> update(@PathVariable @NotNull final Long id,
-                                             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Long version,
+                                             @RequestHeader(value = HttpHeaders.IF_MATCH) final Long version,
                                              @Valid @RequestBody final ItemUpdateResource itemUpdateResource) {
-
 
         // Find the item and update the instance
         return itemService.findById(id, version, false).map(item -> {
             itemMapper.update(itemUpdateResource, item);
             return item;
-        }).flatMap(itemService::save)
-                .map(item -> noContent().build());
+        }).flatMap(itemService::update)
+                .map(itemId -> noContent().build());
     }
 
     @ApiOperation("Patch an existing item following the patch merge RCF (https://tools.ietf.org/html/rfc7396)")
     @PatchMapping(value = "/{id}")
-    @SuppressWarnings({"OptionalAssignedToNull", "OptionalGetWithoutIsPresent"})
+    @SuppressWarnings({"OptionalAssignedToNull"})
     public Mono<ResponseEntity<Void>> patch(@PathVariable @NotNull final Long id,
-                                            @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Long version,
+                                            @RequestHeader(value = HttpHeaders.IF_MATCH) final Long version,
                                             @Valid @RequestBody final ItemPatchResource patch) {
 
         return itemService.findById(id, version, false).map(item -> {
             if (patch.getDescription() != null) {
                 // The description has been provided in the patch
-                item.setDescription(patch.getDescription().get());
+                item.setDescription(patch.getDescription().orElse(null));
             }
 
             if (patch.getStatus() != null) {
                 // The status has been provided in the patch
-                item.setStatus(patch.getStatus().get());
+                item.setStatus(patch.getStatus().orElse(null));
             }
 
             if(patch.getAssigneeId() != null) {
-                item.setAssigneeId(patch.getAssigneeId().get());
+                item.setAssigneeId(patch.getAssigneeId().orElse(null));
             }
 
             if(patch.getTagIds() != null) {
@@ -94,8 +93,8 @@ public class ItemController {
             }
 
             return item;
-        }).flatMap(itemService::save)
-                .map(item -> noContent().build());
+        }).flatMap(itemService::update)
+                .map(itemId -> noContent().build());
     }
 
     @ApiOperation("Find an item by its id")
@@ -116,7 +115,7 @@ public class ItemController {
     @ApiOperation("Delete an item")
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> delete(@PathVariable final Long id,
-                                             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Long version) {
+                                             @RequestHeader(value = HttpHeaders.IF_MATCH) final Long version) {
 
         return itemService.deleteById(id, version).map(empty -> noContent().build());
     }

@@ -5,13 +5,13 @@ import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
-import java.util.Set;
+import java.util.Collection;
 
 @Repository
 public interface ItemTagRepository extends ReactiveSortingRepository<ItemTag, Long> {
 
     Mono<Integer> deleteAllByItemId(Long itemId);
 
-    Mono<Integer> deleteAllByTagIdIn(Set<Long> tagIds);
+    Mono<Integer> deleteAllByItemIdAndTagIdNotIn(Long itemId, Collection<Long> tagIds);
 
 }
