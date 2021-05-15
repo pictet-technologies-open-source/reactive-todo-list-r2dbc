@@ -35,7 +35,7 @@ public class TagController {
 
     @ApiOperation("Get the tags")
     @GetMapping(produces = TEXT_EVENT_STREAM_VALUE)
-    public Flux<TagResource> getAllItems() {
+    public Flux<TagResource> getAll() {
 
         return tagService.findAll()
                 .map(tagMapper::toResource);
