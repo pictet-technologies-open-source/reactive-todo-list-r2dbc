@@ -2,7 +2,6 @@ package com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.controll
 
 
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper.ItemMapper;
-import com.pictet.technologies.opensource.reactive.r2dbc.todolist.mapper.TagMapper;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemPatchResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemResource;
 import com.pictet.technologies.opensource.reactive.r2dbc.todolist.rest.api.ItemUpdateResource;
@@ -39,7 +38,6 @@ public class ItemController {
 
     private final ItemService itemService;
     private final ItemMapper itemMapper;
-    private final TagMapper tagMapper;
 
     @ApiOperation("Create a new item")
     @PostMapping
@@ -57,42 +55,21 @@ public class ItemController {
                                              @Valid @RequestBody final ItemUpdateResource itemUpdateResource) {
 
         // Find the item and update the instance
-        return itemService.findById(id, version, false).map(item -> {
-            itemMapper.update(itemUpdateResource, item);
-            return item;
-        }).flatMap(itemService::update)
-                .map(item -> noContent().build());
+        return itemService.findById(id, version, false)
+          .map(item -> itemMapper.update(itemUpdateResource, item))
+          .flatMap(itemService::update)
+          .map(item -> noContent().build());
     }
 
     @ApiOperation("Patch an existing item following the patch merge RCF (https://tools.ietf.org/html/rfc7396)")
     @PatchMapping(value = "/{id}")
-    @SuppressWarnings({"OptionalAssignedToNull"})
     public Mono<ResponseEntity<Void>> patch(@PathVariable @NotNull final Long id,
                                             @RequestHeader(value = HttpHeaders.IF_MATCH) final Long version,
                                             @Valid @RequestBody final ItemPatchResource patch) {
 
-        return itemService.findById(id, version, false).map(item -> {
-            if (patch.getDescription() != null) {
-                // The description has been provided in the patch
-                item.setDescription(patch.getDescription().orElse(null));
-            }
-
-            if (patch.getStatus() != null) {
-                // The status has been provided in the patch
-                item.setStatus(patch.getStatus().orElse(null));
-            }
-
-            if(patch.getAssigneeId() != null) {
-                item.setAssigneeId(patch.getAssigneeId().orElse(null));
-            }
-
-            if(patch.getTagIds() != null) {
-
-                // Set tags objects containing only the ID
-                item.setTags(tagMapper.toTags(patch.getTagIds().orElse(null)));
-            }
-            return item;
-        }).flatMap(itemService::update)
+        return itemService.findById(id, version, false)
+                .map(item -> itemMapper.patch(patch, item))
+                .flatMap(itemService::update)
                 .map(itemId -> noContent().build());
     }
 

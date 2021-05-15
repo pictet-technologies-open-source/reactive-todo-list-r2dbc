@@ -85,32 +85,32 @@ public class ItemService {
         return // Find the existing link to the tags
                itemTagRepository.findAllByItemId(itemToSave.getId()).collectList()
 
-                // Remove and add the links to the tags
-                .flatMap(currentItemTags -> {
+               // Remove and add the links to the tags
+               .flatMap(currentItemTags -> {
 
-                    // As R2DBC does not support embedded IDs, the ItemTag entity has a technical key
-                    // We can't just replace all ItemTags, we need to generate the proper insert/delete statements
+                   // As R2DBC does not support embedded IDs, the ItemTag entity has a technical key
+                   // We can't just replace all ItemTags, we need to generate the proper insert/delete statements
 
-                    final Collection<Long> existingTagIds = tagMapper.extractTagIdsFromItemTags(currentItemTags);
-                    final Collection<Long> tagIdsToSave = tagMapper.extractTagIdsFromTags(itemToSave.getTags());
+                   final Collection<Long> existingTagIds = tagMapper.extractTagIdsFromItemTags(currentItemTags);
+                   final Collection<Long> tagIdsToSave = tagMapper.extractTagIdsFromTags(itemToSave.getTags());
 
-                    // Item Tags to be deleted
-                    final Collection<ItemTag> removedItemTags = currentItemTags.stream()
-                            .filter(itemTag -> ! tagIdsToSave.contains(itemTag.getTagId()))
-                            .collect(Collectors.toList());
+                   // Item Tags to be deleted
+                   final Collection<ItemTag> removedItemTags = currentItemTags.stream()
+                           .filter(itemTag -> !tagIdsToSave.contains(itemTag.getTagId()))
+                           .collect(Collectors.toList());
 
-                    // Item Tags to be inserted
-                    final Collection<ItemTag> addedItemTags = tagIdsToSave.stream()
-                            .filter(tagId -> ! existingTagIds.contains(tagId))
-                            .map(tagId -> new ItemTag(itemToSave.getId(), tagId))
-                            .collect(Collectors.toList());
+                   // Item Tags to be inserted
+                   final Collection<ItemTag> addedItemTags = tagIdsToSave.stream()
+                           .filter(tagId -> !existingTagIds.contains(tagId))
+                           .map(tagId -> new ItemTag(itemToSave.getId(), tagId))
+                           .collect(Collectors.toList());
 
-                    return itemTagRepository.deleteAll(removedItemTags)
-                                .then(itemTagRepository.saveAll(addedItemTags).collectList());
-                })
+                   return itemTagRepository.deleteAll(removedItemTags)
+                           .then(itemTagRepository.saveAll(addedItemTags).collectList());
+               })
 
-                // Save the item
-                .then(itemRepository.save(itemToSave));
+               // Save the item
+               .then(itemRepository.save(itemToSave));
     }
 
     @Transactional
