@@ -5,7 +5,7 @@ import {PersonService} from '../service/person.service';
 import {TagService} from '../service/tag.service';
 import {Person} from '../model/person';
 import {Tag} from '../model/tag';
-import {SaveItem} from "../model/save-item";
+import {SaveItem} from '../model/save-item';
 
 @Component({
   selector: 'app-item-edit',
