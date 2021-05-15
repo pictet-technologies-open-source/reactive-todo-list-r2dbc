@@ -82,6 +82,7 @@ public class ItemService {
             return Mono.error(new IllegalArgumentException("When updating an item, the id and the version must be provided"));
         }
 
+        // TODO check existence
         return // Find the existing link to the tags
                itemTagRepository.findAllByItemId(itemToSave.getId()).collectList()
 
