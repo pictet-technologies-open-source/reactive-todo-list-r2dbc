@@ -27,13 +27,13 @@ export class ItemSaveDialogComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if(this.item) {
+    if (this.item) {
       this.itemToBeSaved = {
         id: this.item.id,
         description: this.item.description,
         assigneeId: this.item.assignee ? this.item.assignee.id : null,
         tagIds: this.item.tags ? this.item.tags.map(t => t.id) : []
-      }
+      };
     } else {
       this.itemToBeSaved = {tagIds: []};
     }
