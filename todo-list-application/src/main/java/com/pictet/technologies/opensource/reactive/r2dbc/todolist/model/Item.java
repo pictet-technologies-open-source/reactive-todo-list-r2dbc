@@ -1,6 +1,9 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.*;
 import org.springframework.data.relational.core.mapping.Table;
@@ -12,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Table
-@EqualsAndHashCode(of = "id")
 @Getter
 @Setter
 @ToString

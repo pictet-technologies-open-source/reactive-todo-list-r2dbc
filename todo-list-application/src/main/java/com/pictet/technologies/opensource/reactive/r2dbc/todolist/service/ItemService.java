@@ -18,7 +18,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.pictet.technologies.opensource.reactive.r2dbc.todolist.model.NotificationTopic.ITEM_DELETED;
@@ -51,10 +50,11 @@ public class ItemService {
     /**
      * Create a new item
      * @param item Item to be created
-     * @return the ID of the newly created item
+     *
+     * @return the saved item without the related entities
      */
     @Transactional
-    public Mono<Long> create(Item item) {
+    public Mono<Item> create(Item item) {
 
         if(item.getId() != null || item.getVersion() != null) {
             return Mono.error(new IllegalArgumentException("When creating an item, the id and the version must be null"));
@@ -66,44 +66,51 @@ public class ItemService {
                 .flatMap(savedItem ->
                      itemTagRepository.saveAll(tagMapper.toItemTags(savedItem.getId(), savedItem.getTags()))
                          .collectList()
-                         // Return the ID of the newly created item
-                         .then(Mono.just(savedItem.getId())));
+                         // Return the newly created item
+                         .then(Mono.just(savedItem)));
     }
 
+    /**
+     * Update an Item
+     * @param itemToSave item to be saved
+     * @return the saved item without the related entities
+     */
     @Transactional
-    public Mono<Long> update(Item itemToSave) {
+    public Mono<Item> update(Item itemToSave) {
 
         if(itemToSave.getId() == null || itemToSave.getVersion() == null) {
             return Mono.error(new IllegalArgumentException("When updating an item, the id and the version must be provided"));
         }
 
-        final Collection<Long> itemToSaveTagIds = tagMapper.toTagIds(itemToSave.getTags());
+        return // Find the existing link to the tags
+               itemTagRepository.findAllByItemId(itemToSave.getId()).collectList()
 
-        return  // Delete the links to the removed tags
-                this.itemTagRepository.deleteAllByItemIdAndTagIdNotIn(itemToSave.getId(), itemToSaveTagIds)
+                // Remove and add the links to the tags
+                .flatMap(currentItemTags -> {
 
-                // Find the current item
-                .then(findById(itemToSave.getId(), itemToSave.getVersion(), true))
+                    // As R2DBC does not support embedded IDs, the ItemTag entity has a technical key
+                    // We can't just replace all ItemTags, we need to generate the proper insert/delete statements
 
-                // Insert the links to the new added tags
-                .flatMap(currentItem -> {
+                    final Collection<Long> existingTagIds = tagMapper.extractTagIdsFromItemTags(currentItemTags);
+                    final Collection<Long> tagIdsToSave = tagMapper.extractTagIdsFromTags(itemToSave.getTags());
 
-                    final Collection<Long> currentTagIds = tagMapper.toTagIds(currentItem.getTags());
+                    // Item Tags to be deleted
+                    final Collection<ItemTag> removedItemTags = currentItemTags.stream()
+                            .filter(itemTag -> ! tagIdsToSave.contains(itemTag.getTagId()))
+                            .collect(Collectors.toList());
 
-                    // Compute the list of new tag ids
-                    itemToSaveTagIds.removeAll(currentTagIds);
+                    // Item Tags to be inserted
+                    final Collection<ItemTag> addedItemTags = tagIdsToSave.stream()
+                            .filter(tagId -> ! existingTagIds.contains(tagId))
+                            .map(tagId -> new ItemTag(itemToSave.getId(), tagId))
+                            .collect(Collectors.toList());
 
-                    // Create the links to the added tags
-                    final List<ItemTag> newItemTags = itemToSaveTagIds.stream()
-                            .map(tagId -> new ItemTag(itemToSave.getId(), tagId)).collect(Collectors.toList());
-
-                    return this.itemTagRepository.saveAll(newItemTags).collectList();
-
+                    return itemTagRepository.deleteAll(removedItemTags)
+                                .then(itemTagRepository.saveAll(addedItemTags).collectList());
                 })
 
                 // Save the item
-                .flatMap(r -> itemRepository.save(itemToSave))
-                .map(Item::getId);
+                .then(itemRepository.save(itemToSave));
     }
 
     @Transactional

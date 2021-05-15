@@ -28,13 +28,22 @@ public interface TagMapper {
                 .collect(Collectors.toList());
     }
 
-    default Collection<Long> toTagIds(Collection<Tag> tags) {
+    default Collection<Long> extractTagIdsFromTags(Collection<Tag> tags) {
         if(tags == null) {
             return new LinkedHashSet<>();
         }
 
         return tags.stream().map(Tag::getId).collect(Collectors.toSet());
     }
+
+    default Collection<Long> extractTagIdsFromItemTags(Collection<ItemTag> itemTags) {
+        if(itemTags == null) {
+            return new LinkedHashSet<>();
+        }
+
+        return itemTags.stream().map(ItemTag::getTagId).collect(Collectors.toSet());
+    }
+
 
     default Collection<ItemTag> toItemTags(Long itemId, Collection<Tag> tags) {
         if(tags == null) {

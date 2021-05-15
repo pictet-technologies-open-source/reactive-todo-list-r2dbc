@@ -1,6 +1,5 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.model;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,7 +15,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Table
-@EqualsAndHashCode(of = "id")
 @Getter
 @Setter
 @ToString

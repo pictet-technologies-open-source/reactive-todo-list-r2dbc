@@ -46,7 +46,7 @@ public class ItemController {
     public Mono<ResponseEntity<Void>> create(@Valid @RequestBody final NewItemResource newItemResource) {
 
         return itemService.create(itemMapper.toModel(newItemResource))
-                .map(itemId -> created(linkTo(ItemController.class).slash(itemId).toUri()).build());
+                .map(item -> created(linkTo(ItemController.class).slash(item.getId()).toUri()).build());
 
     }
 
@@ -61,7 +61,7 @@ public class ItemController {
             itemMapper.update(itemUpdateResource, item);
             return item;
         }).flatMap(itemService::update)
-                .map(itemId -> noContent().build());
+                .map(item -> noContent().build());
     }
 
     @ApiOperation("Patch an existing item following the patch merge RCF (https://tools.ietf.org/html/rfc7396)")
