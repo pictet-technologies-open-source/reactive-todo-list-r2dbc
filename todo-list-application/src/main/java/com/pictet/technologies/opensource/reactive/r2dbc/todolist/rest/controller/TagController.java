@@ -26,7 +26,7 @@ public class TagController {
     private final TagService tagService;
     private final TagMapper tagMapper;
 
-    @ApiOperation("Find a person by its id")
+    @ApiOperation("Find a tag by its id")
     @GetMapping(value = "/{id}", produces = {APPLICATION_JSON_VALUE})
     public Mono<TagResource> findById(@PathVariable final Long id) {
 
