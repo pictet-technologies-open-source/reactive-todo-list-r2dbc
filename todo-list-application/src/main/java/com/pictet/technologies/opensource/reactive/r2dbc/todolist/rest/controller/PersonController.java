@@ -35,7 +35,7 @@ public class PersonController {
 
     @ApiOperation("Get the people")
     @GetMapping(produces = TEXT_EVENT_STREAM_VALUE)
-    public Flux<PersonResource> getAllItems() {
+    public Flux<PersonResource> getAll() {
 
         return personService.findAll()
                 .map(personMapper::toResource);
