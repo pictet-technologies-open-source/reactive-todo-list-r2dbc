@@ -1,15 +1,35 @@
 <div style="overflow: visible">
   <h1 mat-dialog-title>{{item ? 'Update' : 'Create a new item' }}</h1>
   <div mat-dialog-content>
-    <textarea [(ngModel)]="description" style="min-width: 96%; min-height: 100px;"
-              maxLength="4000"></textarea>
+    <textarea placeholder="Description" [(ngModel)]="itemToBeSaved.description" style="min-width: 96%; min-height: 100px;"
+                maxLength="4000"></textarea>
+
+    <mat-form-field style="padding-top: 10px;">
+      <mat-label>Assignee</mat-label>
+      <mat-select [(ngModel)]="itemToBeSaved.assigneeId">
+        <mat-option [value]="null">Unassigned</mat-option>
+        <mat-option *ngFor="let person of people" [value]="person.id">{{person.firstName + ' ' + person.lastName}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="tags">
+
+      <mat-chip-list>
+        <mat-chip
+          class="tag clickable"
+          [ngClass]="{'selected': isTagSelected(tag)}"
+          *ngFor="let tag of tags"
+          (click)="toggleTagSelected(tag)">{{tag.name}}</mat-chip>
+      </mat-chip-list>
+    </div>
+
   </div>
 
   <div mat-dialog-actions>
     <button (click)="onCancel()"
             mat-raised-button>Cancel
     </button>
-    <button [disabled]="!description || !description.trim()" (click)="onOk()"
+    <button [disabled]="!itemToBeSaved.description || !itemToBeSaved.description.trim()" (click)="onOk()"
             mat-raised-button>Save
     </button>
   </div>

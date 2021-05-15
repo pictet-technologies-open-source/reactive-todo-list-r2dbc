@@ -2,9 +2,19 @@
   <div style="width: 10%"></div>
   <div style="width: 80%;" (mouseup)="displayMenu = true" (mousedown)="displayMenu = false">
     <mat-card class="item-card">
+      <mat-card-title class="wrap assignee-section">
+        <span>{{getAssigneeName()}}</span>
+      </mat-card-title>
       <mat-card-content>
-        <div class="item-description">
-          <span>{{item.description}}</span>
+        <div class="description">
+          <div *ngIf="item.tags" class="tags">
+            <span *ngFor="let tag of item.tags; let i = index;" >
+              <span *ngIf="i>0" class="tag-separator">|</span><span>{{tag.name}}</span>
+            </span>
+          </div>
+          <div style="padding-top: 5px;">
+            <span>{{item.description}}</span>
+          </div>
         </div>
       </mat-card-content>
       <mat-card-footer>

@@ -3,11 +3,11 @@
   background-color: lightyellow;
   margin: 0;
   overflow: auto;
-  min-height: 75px;
+  min-height: 110px;
   max-height: 200px;
 }
 
-.item-description {
+.description {
   padding-right: 20px;
   padding-left: 5px;
   word-break: break-all;
@@ -52,3 +52,24 @@
   }
 }
 
+.assignee-section {
+  width: 100%;
+  color: teal;
+  border-bottom: 2px solid teal;
+  font-size: 16px;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.tags {
+  padding-top: 5px;
+  padding-bottom: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  color: teal;
+
+  .tag-separator {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}

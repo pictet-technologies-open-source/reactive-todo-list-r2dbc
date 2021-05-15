@@ -165,6 +165,7 @@ public class ItemControllerIntegrationTest {
         webTestClient.put()
                 .uri(URI + "/-1")
                 .bodyValue(itemUpdateResource)
+                .header(IF_MATCH, "0")
                 .exchange()
                 // Then
                 .expectStatus().isNotFound();
@@ -188,6 +189,7 @@ public class ItemControllerIntegrationTest {
 
         webTestClient.put()
                 .uri(URI + item.getId())
+                .header(IF_MATCH, item.getVersion().toString())
                 .bodyValue(itemResource)
                 .exchange()
                 // Then
@@ -258,6 +260,7 @@ public class ItemControllerIntegrationTest {
 
         webTestClient.delete()
                 .uri(URI + "-1")
+                .header(IF_MATCH, "0")
                 .exchange()
                 // Then
                 .expectStatus().isNotFound();
@@ -275,6 +278,7 @@ public class ItemControllerIntegrationTest {
         // When deleting it
         webTestClient.delete()
                 .uri(URI + item.getId())
+                .header(IF_MATCH, item.getVersion().toString())
                 .exchange()
                 // Then
                 .expectStatus().isOk();
@@ -282,6 +286,7 @@ public class ItemControllerIntegrationTest {
         // When trying ot delete it once more
         webTestClient.delete()
                 .uri(URI + item.getId())
+                .header(IF_MATCH, item.getVersion().toString())
                 .exchange()
                 // Then
                 .expectStatus().isNotFound();
@@ -335,6 +340,7 @@ public class ItemControllerIntegrationTest {
         // When
         webTestClient.patch()
                 .uri(URI + "-1")
+                .header(IF_MATCH, "0")
                 .bodyValue("{\"description\": \"updated\"}")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .exchange()
@@ -354,6 +360,7 @@ public class ItemControllerIntegrationTest {
         // When
         webTestClient.patch()
                 .uri(URI + item.getId())
+                .header(IF_MATCH, item.getVersion().toString())
                 .bodyValue("{\"description\": \"updated\"}")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .exchange()

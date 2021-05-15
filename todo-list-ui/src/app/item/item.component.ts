@@ -1,7 +1,7 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Item} from '../model/item';
 import {ItemService} from '../service/item.service';
-import {finalize, take} from 'rxjs/operators';
+import {finalize} from 'rxjs/operators';
 import {MatDialog} from '@angular/material/dialog';
 import {ItemSaveDialogComponent} from '../item-save-dialog/item-save-dialog.component';
 import {DateUtils} from '../utils/date-utils';
@@ -45,9 +45,9 @@ export class ItemComponent {
       data: this.item
     });
 
-    dialogRef.afterClosed().pipe(take(1)).subscribe((response) => {
+    dialogRef.afterClosed().subscribe((response) => {
       if (response) {
-        this.itemService.updateDescription(this.item.id, this.item.version, response)
+        this.itemService.update(this.item.id, this.item.version, response.description, response.assigneeId, response.tagIds)
           .pipe(finalize(() => this.actionInProgress = false))
           .subscribe(() => {
             this.itemUpdated.emit();
@@ -62,7 +62,11 @@ export class ItemComponent {
     return DateUtils.toDuration(this.item.lastModifiedDate).asSeconds() < 5;
   }
 
-  displayActionButtons() {
+  displayActionButtons(): boolean {
     return !this.readonly && this.displayMenu;
+  }
+
+  getAssigneeName(): string {
+    return this.item.assignee ? `${this.item.assignee.firstName} ${this.item.assignee.lastName}` : 'Unassigned';
   }
 }

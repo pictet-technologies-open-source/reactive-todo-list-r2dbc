@@ -18,7 +18,11 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {ItemSaveDialogComponent} from './item-save-dialog/item-save-dialog.component';
 import {HttpErrorsInterceptor} from './interceptor/http-errors-interceptor';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import { MomentHumanizePipe } from './pipe/moment-humanize.pipe';
+import {MomentHumanizePipe} from './pipe/moment-humanize.pipe';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -42,7 +46,11 @@ import { MomentHumanizePipe } from './pipe/moment-humanize.pipe';
         FormsModule,
         FlexModule,
         DragDropModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatChipsModule,
+        MatCheckboxModule,
     ],
   providers: [
     {

@@ -1,6 +1,7 @@
 package com.pictet.technologies.opensource.reactive.r2dbc.todolist.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -10,6 +11,7 @@ import io.micrometer.core.instrument.util.StringUtils;
 import io.r2dbc.postgresql.api.PostgresqlConnection;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,6 +23,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
 
     private final ConnectionFactory connectionFactory;
@@ -57,6 +60,8 @@ public class NotificationService {
                         try {
                             sink.next(objectMapper.readValue(json, clazz));
                         } catch (JsonProcessingException e) {
+                            log.error(String.format("Problem deserializing an instance of [%s] " +
+                                    "with the following json: %s ", clazz.getSimpleName(), json), e);
                             Mono.error(new NotificationDeserializationException(topic, e));
                         }
                     }
@@ -144,7 +149,9 @@ public class NotificationService {
         return new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 // This strategy is needed to match the DB column names with the entity field names
-                .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+                .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+                // Ignore the missing properties (mainly foreign keys)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
 }
