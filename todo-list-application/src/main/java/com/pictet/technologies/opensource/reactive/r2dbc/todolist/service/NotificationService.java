@@ -139,7 +139,7 @@ public class NotificationService {
     }
 
     /**
-     * Create an object mapper used to convert the json notification
+     * Create an object mapper to convert the json notification
      * parameters to entities
      *
      * @return the object mapper
