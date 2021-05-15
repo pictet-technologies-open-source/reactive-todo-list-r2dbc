@@ -4,7 +4,9 @@ import {Observable} from 'rxjs';
 
 export abstract class AbstractReactiveService<T> {
 
-  constructor(protected readonly baseUri, protected readonly http: HttpClient, protected readonly ngZone: NgZone) {
+  constructor(protected readonly baseUri,
+              protected readonly http: HttpClient,
+              protected readonly ngZone: NgZone) {
 
   }
 
