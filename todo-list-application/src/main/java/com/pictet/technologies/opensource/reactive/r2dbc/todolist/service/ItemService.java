@@ -82,9 +82,10 @@ public class ItemService {
             return Mono.error(new IllegalArgumentException("When updating an item, the id and the version must be provided"));
         }
 
-        // TODO check existence
-        return // Find the existing link to the tags
-               itemTagRepository.findAllByItemId(itemToSave.getId()).collectList()
+        return verifyExistence(itemToSave.getId())
+
+                // Find the existing link to the tags
+               .then(itemTagRepository.findAllByItemId(itemToSave.getId()).collectList())
 
                // Remove and add the links to the tags
                .flatMap(currentItemTags -> {
@@ -200,6 +201,16 @@ public class ItemService {
         }
 
         return mono;
+    }
+
+    private Mono<Boolean> verifyExistence(Long id) {
+        return itemRepository.existsById(id).handle((exists, sink) -> {
+            if (Boolean.FALSE.equals(exists)) {
+                sink.error(new ItemNotFoundException(id));
+            } else {
+                sink.next(exists);
+            }
+        });
     }
 
 }
