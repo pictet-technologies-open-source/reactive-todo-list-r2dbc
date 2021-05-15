@@ -91,7 +91,6 @@ public class ItemController {
                 // Set tags objects containing only the ID
                 item.setTags(tagMapper.toTags(patch.getTagIds().orElse(null)));
             }
-
             return item;
         }).flatMap(itemService::update)
                 .map(itemId -> noContent().build());

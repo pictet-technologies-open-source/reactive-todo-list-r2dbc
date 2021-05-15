@@ -38,17 +38,26 @@ public class ItemService {
     private final TagRepository tagRepository;
     private final TagMapper tagMapper;
 
+    /**
+     * Find all items
+     * @return Find all items with the related objects loaded
+     */
     @Transactional(readOnly = true)
     public Flux<Item> findAll() {
         return itemRepository.findAll(DEFAULT_SORT)
                 .flatMap(this::loadRelations);
     }
 
+    /**
+     * Create a new item
+     * @param item Item to be created
+     * @return the ID of the newly created item
+     */
     @Transactional
     public Mono<Long> create(Item item) {
 
         if(item.getId() != null || item.getVersion() != null) {
-            throw new IllegalArgumentException("When creating an item, the id and the version must be null");
+            return Mono.error(new IllegalArgumentException("When creating an item, the id and the version must be null"));
         }
 
         return  // Save the new item
@@ -65,7 +74,7 @@ public class ItemService {
     public Mono<Long> update(Item itemToSave) {
 
         if(itemToSave.getId() == null || itemToSave.getVersion() == null) {
-            throw new IllegalArgumentException("When updating an item, the id and the version must be provided");
+            return Mono.error(new IllegalArgumentException("When updating an item, the id and the version must be provided"));
         }
 
         final Collection<Long> itemToSaveTagIds = tagMapper.toTagIds(itemToSave.getTags());
@@ -131,12 +140,14 @@ public class ItemService {
                 .handle((item, sink) -> {
                     // Optimistic locking: pre-check
                     if (version != null && !version.equals(item.getVersion())) {
+                        // The version are different, return an error
                         sink.error(new UnexpectedItemVersionException(version, item.getVersion()));
                     } else {
                         sink.next(item);
                     }
                 });
 
+        // Load the related objects, if requested
         return loadRelations ? itemMono.flatMap(this::loadRelations) : itemMono;
     }
 
