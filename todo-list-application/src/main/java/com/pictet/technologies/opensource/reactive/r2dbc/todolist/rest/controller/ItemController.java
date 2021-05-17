@@ -93,7 +93,8 @@ public class ItemController {
     public Mono<ResponseEntity<Void>> delete(@PathVariable final Long id,
                                              @RequestHeader(value = HttpHeaders.IF_MATCH) final Long version) {
 
-        return itemService.deleteById(id, version).map(empty -> noContent().build());
+        return itemService.deleteById(id, version)
+                   .map(empty -> noContent().build());
     }
 
     @GetMapping("/events")

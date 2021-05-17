@@ -26,7 +26,7 @@ public class PersonController {
     private final PersonService personService;
     private final PersonMapper personMapper;
 
-    @ApiOperation("Find a person by its id")
+    @ApiOperation("Find a person by his id")
     @GetMapping(value = "/{id}", produces = {APPLICATION_JSON_VALUE})
     public Mono<PersonResource> findById(@PathVariable final Long id) {
 
@@ -35,7 +35,7 @@ public class PersonController {
 
     @ApiOperation("Get the people")
     @GetMapping(produces = TEXT_EVENT_STREAM_VALUE)
-    public Flux<PersonResource> getAllItems() {
+    public Flux<PersonResource> getAll() {
 
         return personService.findAll()
                 .map(personMapper::toResource);

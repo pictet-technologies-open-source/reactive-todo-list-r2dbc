@@ -26,7 +26,7 @@ public class TagController {
     private final TagService tagService;
     private final TagMapper tagMapper;
 
-    @ApiOperation("Find a person by its id")
+    @ApiOperation("Find a tag by its id")
     @GetMapping(value = "/{id}", produces = {APPLICATION_JSON_VALUE})
     public Mono<TagResource> findById(@PathVariable final Long id) {
 
@@ -35,7 +35,7 @@ public class TagController {
 
     @ApiOperation("Get the tags")
     @GetMapping(produces = TEXT_EVENT_STREAM_VALUE)
-    public Flux<TagResource> getAllItems() {
+    public Flux<TagResource> getAll() {
 
         return tagService.findAll()
                 .map(tagMapper::toResource);

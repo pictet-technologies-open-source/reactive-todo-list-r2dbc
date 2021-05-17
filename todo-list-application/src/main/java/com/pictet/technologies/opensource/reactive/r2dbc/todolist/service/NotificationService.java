@@ -139,7 +139,7 @@ public class NotificationService {
     }
 
     /**
-     * Create an object mapper used to convert the json notification
+     * Create an object mapper to convert the json notification
      * parameters to entities
      *
      * @return the object mapper
@@ -150,7 +150,7 @@ public class NotificationService {
                 .registerModule(new JavaTimeModule())
                 // This strategy is needed to match the DB column names with the entity field names
                 .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-                // Ignore the missing properties (mainly foreign keys)
+                // Ignore the missing properties
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
