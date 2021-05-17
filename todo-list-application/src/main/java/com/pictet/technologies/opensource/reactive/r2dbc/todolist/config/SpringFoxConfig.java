@@ -1,4 +1,4 @@
-package com.pictet.technologies.r2dbc.reactive.todolist.config;
+package com.pictet.technologies.opensource.reactive.r2dbc.todolist.config;
 
 import com.fasterxml.classmate.TypeResolver;
 import lombok.RequiredArgsConstructor;
