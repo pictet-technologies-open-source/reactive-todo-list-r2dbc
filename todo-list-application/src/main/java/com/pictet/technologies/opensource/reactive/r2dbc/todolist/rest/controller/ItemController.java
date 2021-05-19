@@ -67,7 +67,7 @@ public class ItemController {
                                             @RequestHeader(value = HttpHeaders.IF_MATCH) final Long version,
                                             @Valid @RequestBody final ItemPatchResource patch) {
 
-        return itemService.findById(id, version, false)
+        return itemService.findById(id, version, true)
                 .map(item -> itemMapper.patch(patch, item))
                 .flatMap(itemService::update)
                 .map(itemId -> noContent().build());

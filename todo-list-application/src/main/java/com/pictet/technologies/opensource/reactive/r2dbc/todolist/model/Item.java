@@ -54,5 +54,4 @@ public class Item {
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
-
 }
