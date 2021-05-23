@@ -80,7 +80,7 @@ public class ItemController {
         return itemService.findById(id, null, true).map(itemMapper::toResource);
     }
 
-    @ApiOperation("Get a the list of items")
+    @ApiOperation("Get the list of items")
     @GetMapping(produces = TEXT_EVENT_STREAM_VALUE)
     public Flux<ItemResource> getAllItems() {
 

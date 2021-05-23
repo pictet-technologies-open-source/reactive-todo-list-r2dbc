@@ -1,7 +1,7 @@
 CREATE FUNCTION notify_item_saved()
     RETURNS TRIGGER
 AS
-   $$
+$$
 BEGIN
    PERFORM pg_notify('ITEM_SAVED',  row_to_json(NEW)::text);
    RETURN NULL;
