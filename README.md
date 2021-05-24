@@ -7,7 +7,7 @@
 
 # Reactive Todo List with PostgreSQL and Spring Data R2DBC
 
-This project aims to explain how to build a fully reactive application with **Spring Boot**, **Spring Webflux**, **Angular**, **PostgreSQL** and **R2DBC**.
+This project aims to explain how to build a fully reactive application with **Spring Boot**, **Spring Webflux**, **Angular**, **PostgreSQL** and **Spring Data R2DBC**.
 It demonstrates how to deal with concurrent modifications using **optimistic locking**, **PostgreSQL Listen/Notify** and **Server Sent Events**.
 
 ### Project structure
