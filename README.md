@@ -5,7 +5,7 @@
 [![Made with Love by Pictet Technologies](https://img.shields.io/badge/Made%20with%20love%20by-Pictet%20Technologies-ff3434.svg)](https://pictet-technologies.com/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/alexandre-jacquot-34bb7b5)
 
-# Reactive Todo List with PostgreSQL and R2DBC
+# Reactive Todo List with PostgreSQL and Spring Data R2DBC
 
 This project aims to explain how to build a fully reactive application with **Spring Boot**, **Spring Webflux**, **Angular**, **PostgreSQL** and **R2DBC**.
 It demonstrates how to deal with concurrent modifications using **optimistic locking**, **PostgreSQL Listen/Notify** and **Server Sent Events**.
