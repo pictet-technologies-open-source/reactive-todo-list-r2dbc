@@ -42,10 +42,12 @@ public class NotificationService {
     public <T> Flux<T> listen(final NotificationTopic topic, final Class<T> clazz) {
 
         // Listen to the topic
-        synchronized (watchedTopics) {
-            if (!watchedTopics.contains(topic)) {
-                executeListenStatement(topic);
-                watchedTopics.add(topic);
+        if (!watchedTopics.contains(topic)) {
+            synchronized (watchedTopics) {
+                if (!watchedTopics.contains(topic)) {
+                    executeListenStatement(topic);
+                    watchedTopics.add(topic);
+                }
             }
         }
 
@@ -75,11 +77,13 @@ public class NotificationService {
      */
     public void unlisten(final NotificationTopic topic) {
 
-        synchronized (watchedTopics) {
+        if (watchedTopics.contains(topic)) {
+            synchronized (watchedTopics) {
 
-            if (watchedTopics.contains(topic)) {
-                executeUnlistenStatement(topic);
-                watchedTopics.remove(topic);
+                if (watchedTopics.contains(topic)) {
+                    executeUnlistenStatement(topic);
+                    watchedTopics.remove(topic);
+                }
             }
         }
     }
