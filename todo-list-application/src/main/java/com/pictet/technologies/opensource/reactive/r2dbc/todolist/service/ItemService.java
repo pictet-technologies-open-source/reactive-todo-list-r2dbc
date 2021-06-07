@@ -41,7 +41,6 @@ public class ItemService {
      * Find all items
      * @return Find all items with the related objects loaded
      */
-    @Transactional(readOnly = true)
     public Flux<Item> findAll() {
         return itemRepository.findAll(DEFAULT_SORT)
                 .flatMap(this::loadRelations);
@@ -141,7 +140,6 @@ public class ItemService {
      * @return the item
      *
      */
-    @Transactional(readOnly = true)
     public Mono<Item> findById(final Long id, final Long version, final boolean loadRelations) {
 
         final Mono<Item> itemMono = itemRepository.findById(id)

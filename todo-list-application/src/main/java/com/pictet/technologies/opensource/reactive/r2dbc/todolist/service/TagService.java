@@ -6,7 +6,6 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.Tag
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,7 +17,6 @@ public class TagService {
 
     private final TagRepository tagRepository;
 
-    @Transactional(readOnly = true)
     public Flux<Tag> findAll() {
         return tagRepository.findAll(DEFAULT_SORT);
     }
@@ -29,7 +27,6 @@ public class TagService {
      * @param id      identifier of the tag
      * @return the person
      */
-    @Transactional(readOnly = true)
     public Mono<Tag> findById(final Long id) {
 
         return tagRepository.findById(id)

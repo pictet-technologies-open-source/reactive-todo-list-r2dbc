@@ -6,7 +6,6 @@ import com.pictet.technologies.opensource.reactive.r2dbc.todolist.repository.Per
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,7 +18,6 @@ public class PersonService {
 
     private final PersonRepository personRepository;
 
-    @Transactional(readOnly = true)
     public Flux<Person> findAll() {
         return personRepository.findAll(DEFAULT_SORT);
     }
@@ -30,7 +28,6 @@ public class PersonService {
      * @param id      identifier of the person
      * @return the person
      */
-    @Transactional(readOnly = true)
     public Mono<Person> findById(final Long id) {
 
         return personRepository.findById(id)
