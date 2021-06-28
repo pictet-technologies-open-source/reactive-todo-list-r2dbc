@@ -35,7 +35,7 @@ public class NotificationService {
     /**
      * Listen to a postgreSQL topic
      *
-     * @param topic Topic to which the connection needs to subscribe to
+     * @param topic Topic to which the connection needs to subscribe
      * @param clazz class of the notification parameter (used for deserialization)
      * @return the notification parameters
      */
@@ -73,7 +73,7 @@ public class NotificationService {
     /**
      * Unlisten from a postgreSQL topic
      *
-     * @param topic Topic to which the connection needs to unsubscribe from
+     * @param topic Topic to which the connection needs to unsubscribe
      */
     public void unlisten(final NotificationTopic topic) {
 
