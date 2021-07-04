@@ -9,5 +9,5 @@ import lombok.Getter;
 public enum NotificationTopic {
 
     ITEM_SAVED,
-    ITEM_DELETED;
+    ITEM_DELETED
 }
