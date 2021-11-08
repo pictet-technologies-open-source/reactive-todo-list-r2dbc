@@ -1,5 +1,5 @@
 #!/bin/bash
 
-./mvnw clean install $*
+./mvnw -X clean install $*
 
 docker-compose -f docker/docker-compose.yml build

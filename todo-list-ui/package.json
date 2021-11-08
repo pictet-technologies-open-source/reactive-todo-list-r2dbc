@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy-config.json",
-    "build": "ng build --output-path ../todo-list-application/src/main/webapp/dist",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider; ng build --output-path ../todo-list-application/src/main/webapp/dist",
     "build-prod": "ng build --prod --output-path ../todo-list-application/src/main/webapp/dist",
     "test": "ng test",
     "lint": "ng lint",
